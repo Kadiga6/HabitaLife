@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiements - HabitaGo{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Mes Paiements</h1>
+            <p class="text-muted">Consultez l'historique de vos paiements de loyer</p>
+        </div>
+    </div>
+
+    {# Résumé des paiements #}
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Payés</h5>
+                    <p class="card-text display-6">5</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">En attente</h5>
+                    <p class="card-text display-6">1</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">En retard</h5>
+                    <p class="card-text display-6">1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tableau des paiements #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Historique des paiements</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Période</th>
+                                    <th>Montant</th>
+                                    <th>Statut</th>
+                                    <th>Date de paiement</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set payments = [
+                                    { period: 'Janvier 2024', amount: '850.00', status: 'paid', date: '05/01/2024' },
+                                    { period: 'Février 2024', amount: '850.00', status: 'paid', date: '03/02/2024' },
+                                    { period: 'Mars 2024', amount: '850.00', status: 'paid', date: '01/03/2024' },
+                                    { period: 'Avril 2024', amount: '850.00', status: 'paid', date: '05/04/2024' },
+                                    { period: 'Mai 2024', amount: '850.00', status: 'paid', date: '02/05/2024' },
+                                    { period: 'Juin 2024', amount: '850.00', status: 'pending', date: null },
+                                    { period: 'Juillet 2024', amount: '850.00', status: 'late', date: null }
+                                ] %}
+
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ payment.period }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">{{ payment.amount }} €</span>
+                                    </td>
+                                    <td>
+                                        {% if payment.status == 'paid' %}
+                                            <span class="badge bg-success">Payé</span>
+                                        {% elseif payment.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">En retard</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if payment.date %}
+                                            {{ payment.date }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if payment.status == 'paid' %}
+                                            <button class="btn btn-sm btn-outline-primary" disabled>
+                                                <i class="bi bi-file-earmark-pdf"></i> Reçu
+                                            </button>
+                                        {% elseif payment.status == 'pending' %}
+                                            <button class="btn btn-sm btn-primary" disabled>
+                                                <i class="bi bi-credit-card"></i> Payer
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-danger" disabled>
+                                                <i class="bi bi-exclamation-triangle"></i> Régulariser
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Informations supplémentaires #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">
+                    <i class="bi bi-info-circle"></i> Informations importantes
+                </h5>
+                <p class="mb-0">
+                    Le loyer est dû le <strong>1er de chaque mois</strong>. En cas de retard, des pénalités peuvent s'appliquer.
+                    Pour toute question concernant vos paiements, contactez votre gestionnaire.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

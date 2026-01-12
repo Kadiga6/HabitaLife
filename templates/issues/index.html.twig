@@ -1,0 +1,209 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Incidents - HabitaGo{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Mes Incidents</h1>
+            <p class="text-muted">Déclarez et suivez vos incidents dans votre logement</p>
+        </div>
+    </div>
+
+    {# Résumé des incidents #}
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">En attente</h5>
+                    <p class="card-text display-6">2</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h5 class="card-title text-info">En cours</h5>
+                    <p class="card-text display-6">1</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Résolus</h5>
+                    <p class="card-text display-6">8</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Bouton déclarer un incident #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Déclarer un nouvel incident</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="issueType" class="form-label">Type d'incident</label>
+                                <select class="form-select" id="issueType" required>
+                                    <option value="">Sélectionnez un type</option>
+                                    <option value="plumbing">Plomberie</option>
+                                    <option value="electricity">Électricité</option>
+                                    <option value="heating">Chauffage</option>
+                                    <option value="lock">Serrurerie</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="issuePriority" class="form-label">Priorité</label>
+                                <select class="form-select" id="issuePriority" required>
+                                    <option value="">Sélectionnez une priorité</option>
+                                    <option value="low">Basse</option>
+                                    <option value="medium">Moyenne</option>
+                                    <option value="high">Haute</option>
+                                    <option value="urgent">Urgente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="issueTitle" class="form-label">Titre</label>
+                            <input type="text" class="form-control" id="issueTitle" placeholder="Résumé court de l'incident" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="issueDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="issueDescription" rows="4" placeholder="Décrivez l'incident en détail..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" disabled>
+                            <i class="bi bi-plus-circle"></i> Déclarer l'incident
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tableau des incidents #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Historique des incidents</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>N°</th>
+                                    <th>Type</th>
+                                    <th>Titre</th>
+                                    <th>Priorité</th>
+                                    <th>Statut</th>
+                                    <th>Date de déclaration</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set issues = [
+                                    { id: '#011', type: 'Plomberie', title: 'Fuite d\'eau sous l\'évier', priority: 'urgent', status: 'pending', date: '10/01/2026' },
+                                    { id: '#010', type: 'Chauffage', title: 'Radiateur chambre ne chauffe pas', priority: 'high', status: 'in_progress', date: '08/01/2026' },
+                                    { id: '#009', type: 'Électricité', title: 'Prise électrique cuisine HS', priority: 'medium', status: 'pending', date: '05/01/2026' },
+                                    { id: '#008', type: 'Autre', title: 'Porte d\'entrée grince', priority: 'low', status: 'resolved', date: '28/12/2025' },
+                                    { id: '#007', type: 'Plomberie', title: 'Chasse d\'eau fuit', priority: 'medium', status: 'resolved', date: '20/12/2025' },
+                                    { id: '#006', type: 'Chauffage', title: 'Thermostat défectueux', priority: 'high', status: 'resolved', date: '15/12/2025' },
+                                    { id: '#005', type: 'Serrurerie', title: 'Clé cassée dans la serrure', priority: 'urgent', status: 'resolved', date: '10/12/2025' },
+                                    { id: '#004', type: 'Électricité', title: 'Ampoule couloir à changer', priority: 'low', status: 'resolved', date: '05/12/2025' },
+                                    { id: '#003', type: 'Plomberie', title: 'Robinet qui goutte', priority: 'low', status: 'resolved', date: '28/11/2025' },
+                                    { id: '#002', type: 'Autre', title: 'Volet roulant bloqué', priority: 'medium', status: 'resolved', date: '20/11/2025' },
+                                    { id: '#001', type: 'Chauffage', title: 'Problème chaudière', priority: 'urgent', status: 'resolved', date: '15/11/2025' }
+                                ] %}
+
+                                {% for issue in issues %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ issue.id }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if issue.type == 'Plomberie' %}
+                                            <i class="bi bi-droplet text-primary"></i>
+                                        {% elseif issue.type == 'Électricité' %}
+                                            <i class="bi bi-lightning text-warning"></i>
+                                        {% elseif issue.type == 'Chauffage' %}
+                                            <i class="bi bi-thermometer-half text-danger"></i>
+                                        {% elseif issue.type == 'Serrurerie' %}
+                                            <i class="bi bi-key text-secondary"></i>
+                                        {% else %}
+                                            <i class="bi bi-tools text-muted"></i>
+                                        {% endif %}
+                                        {{ issue.type }}
+                                    </td>
+                                    <td>{{ issue.title }}</td>
+                                    <td>
+                                        {% if issue.priority == 'urgent' %}
+                                            <span class="badge bg-danger">Urgente</span>
+                                        {% elseif issue.priority == 'high' %}
+                                            <span class="badge bg-warning text-dark">Haute</span>
+                                        {% elseif issue.priority == 'medium' %}
+                                            <span class="badge bg-info">Moyenne</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Basse</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if issue.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        {% elseif issue.status == 'in_progress' %}
+                                            <span class="badge bg-info">En cours</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Résolu</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ issue.date }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" disabled>
+                                            <i class="bi bi-eye"></i> Détails
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Informations pratiques #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Informations pratiques</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="fw-bold">Délais d'intervention :</h6>
+                    <ul class="mb-3">
+                        <li><span class="badge bg-danger">Urgente</span> : Intervention sous 24h</li>
+                        <li><span class="badge bg-warning text-dark">Haute</span> : Intervention sous 48h</li>
+                        <li><span class="badge bg-info">Moyenne</span> : Intervention sous 5 jours</li>
+                        <li><span class="badge bg-secondary">Basse</span> : Intervention sous 10 jours</li>
+                    </ul>
+                    <h6 class="fw-bold">Numéros d'urgence :</h6>
+                    <ul class="mb-0">
+                        <li><strong>Plombier d'urgence :</strong> 06 12 34 56 78</li>
+                        <li><strong>Électricien d'urgence :</strong> 06 23 45 67 89</li>
+                        <li><strong>Gardien de l'immeuble :</strong> 06 34 56 78 90</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

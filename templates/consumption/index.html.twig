@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consommations - HabitaGo{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Mes Consommations</h1>
+            <p class="text-muted">Suivez vos consommations d'énergie et d'eau</p>
+        </div>
+    </div>
+
+    {# Résumé des consommations du mois en cours #}
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Électricité</h5>
+                    <p class="card-text display-6">245 kWh</p>
+                    <small class="text-muted">Ce mois-ci</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h5 class="card-title text-info">Eau</h5>
+                    <p class="card-text display-6">8.5 m³</p>
+                    <small class="text-muted">Ce mois-ci</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">Gaz</h5>
+                    <p class="card-text display-6">156 kWh</p>
+                    <small class="text-muted">Ce mois-ci</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Coût total</h5>
+                    <p class="card-text display-6">78.50 €</p>
+                    <small class="text-muted">Ce mois-ci</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Graphique de consommation (placeholder) #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Évolution mensuelle</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-graph-up"></i> Graphique à venir : visualisez l'évolution de vos consommations sur les 12 derniers mois
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tableau des consommations détaillées #}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Historique des consommations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Période</th>
+                                    <th>Électricité</th>
+                                    <th>Eau</th>
+                                    <th>Gaz</th>
+                                    <th>Coût total</th>
+                                    <th>Tendance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set consumptions = [
+                                    { period: 'Janvier 2026', electricity: '275', water: '9.2', gas: '210', cost: '95.80', trend: 'up' },
+                                    { period: 'Décembre 2025', electricity: '290', water: '8.8', gas: '225', cost: '102.50', trend: 'up' },
+                                    { period: 'Novembre 2025', electricity: '260', water: '8.5', gas: '195', cost: '88.20', trend: 'down' },
+                                    { period: 'Octobre 2025', electricity: '245', water: '8.9', gas: '165', cost: '79.30', trend: 'down' },
+                                    { period: 'Septembre 2025', electricity: '220', water: '9.1', gas: '45', cost: '62.50', trend: 'down' },
+                                    { period: 'Août 2025', electricity: '235', water: '10.2', gas: '30', cost: '65.40', trend: 'up' },
+                                    { period: 'Juillet 2025', electricity: '250', water: '11.5', gas: '25', cost: '70.80', trend: 'up' }
+                                ] %}
+
+                                {% for consumption in consumptions %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ consumption.period }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-primary">{{ consumption.electricity }} kWh</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-info">{{ consumption.water }} m³</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-warning">{{ consumption.gas }} kWh</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold">{{ consumption.cost }} €</span>
+                                    </td>
+                                    <td>
+                                        {% if consumption.trend == 'up' %}
+                                            <span class="text-danger">
+                                                <i class="bi bi-arrow-up"></i> Hausse
+                                            </span>
+                                        {% elseif consumption.trend == 'down' %}
+                                            <span class="text-success">
+                                                <i class="bi bi-arrow-down"></i> Baisse
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">
+                                                <i class="bi bi-dash"></i> Stable
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Conseils d'économie #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Conseils pour réduire vos consommations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Éteignez les appareils en veille pour économiser jusqu'à 10% sur votre facture</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Privilégiez les douches courtes aux bains pour réduire votre consommation d'eau</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Baissez le chauffage d'1°C pour économiser 7% sur votre consommation de gaz</li>
+                        <li class="mb-0"><i class="bi bi-check-circle text-success"></i> Utilisez vos électroménagers en heures creuses quand c'est possible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
