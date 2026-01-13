@@ -11,35 +11,28 @@
         </a>
 
         {# Toggle button pour mobile #}
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
-                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
-
-        {# Navigation principale #}
+        </button> {# Navigation principale #}
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'dashboard' ? 'active' : '' }}" 
-                       href="{{ path('dashboard') }}">
+                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'dashboard' ? 'active' : '' }}" href="{{ path('dashboard') }}">
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'payments' ? 'active' : '' }}" 
-                       href="{{ path('payments') }}">
+                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'payments' ? 'active' : '' }}" href="{{ path('payments') }}">
                         Paiements
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'consumption' ? 'active' : '' }}" 
-                       href="{{ path('consumption') }}">
+                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'consumption' ? 'active' : '' }}" href="{{ path('consumption') }}">
                         Consommations
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'issues' ? 'active' : '' }}" 
-                       href="{{ path('issues') }}">
+                    <a class="nav-link px-3 {{ app.request.attributes.get('_route') starts with 'issues' ? 'active' : '' }}" href="{{ path('issues') }}">
                         Incidents
                     </a>
                 </li>
@@ -47,12 +40,11 @@
 
             {# Actions utilisateur #}
             <div class="d-flex align-items-center gap-2">
-               
+
 
                 {# Dropdown compte utilisateur #}
                 <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border-0" 
-                            type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border-0" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="avatar-circle">
                             <span class="avatar-initials">MJ</span>
                         </div>
@@ -60,16 +52,18 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
                         <li>
-                            <a class="dropdown-item" href="#" onclick="return false;">
+                            <a class="dropdown-item" href="{{ path('profile') }}">
                                 <i class="bi bi-person me-2"></i>Mon profil
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#" onclick="return false;">
+                            <a class="dropdown-item" href="{{ path('settings') }}">
                                 <i class="bi bi-gear me-2"></i>Paramètres
                             </a>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger" href="#" onclick="return false;">
                                 <i class="bi bi-box-arrow-right me-2"></i>Se déconnecter

@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %} {% block title %}Paramètres du compte - HabitaGo{% endblock %} {% block body %}
+<div class="container my-5">
+    {# En-tête #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">
+                <i class="bi bi-gear me-3"></i>Paramètres du compte
+            </h1>
+            <p class="text-muted">Gérez vos informations personnelles et votre sécurité</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Sidebar navigation #}
+        <div class="col-lg-3 mb-4">
+            <div class="list-group sticky-lg-top" style="top: 100px;">
+                <a href="#infos" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="bi bi-person me-2"></i>Informations personnelles
+                </a>
+
+                <a href="#delete" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="bi bi-trash me-2"></i>Suppression du compte
+                </a>
+            </div>
+        </div>
+
+        {# Contenu principal #}
+        <div class="col-lg-9">
+            {# INFORMATIONS PERSONNELLES #}
+            <div id="infos" class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-person me-2"></i>Informations personnelles
+                        </h5>
+
+                        <form>
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label small">Prénom</label>
+                                    <input type="text" class="form-control form-control-sm" id="firstName" value="Jean" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label small">Nom</label>
+                                    <input type="text" class="form-control form-control-sm" id="lastName" value="Dupont" disabled>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="email" class="form-label small">Adresse e-mail</label>
+                                <input type="email" class="form-control form-control-sm" id="email" value="jean.dupont@email.com" disabled>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="phone" class="form-label small">Numéro de téléphone</label>
+                                <input type="tel" class="form-control form-control-sm" id="phone" value="+33 6 12 34 56 78" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label small">Adresse</label>
+                                <input type="text" class="form-control form-control-sm" id="address" value="123 Rue de la Paix, 75000 Paris" disabled>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-sm" disabled>
+                                <i class="bi bi-pencil-square me-2"></i>Modifier mes informations
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+            {# SUPPRESSION DU COMPTE #}
+            <div id="delete" class="profile-section">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-trash me-2"></i>Suppression du compte
+                        </h5>
+
+                        <h6 class="fw-bold mb-3 small">Zone de danger</h6>
+
+                        <div class="alert alert-danger small mb-3">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Attention :</strong> Cette action est irréversible. Toutes vos données seront supprimées.
+                        </div>
+
+                        <p class="small text-muted mb-3">
+                            En supprimant votre compte, vous perdrez l'accès à tous vos services et données.
+                        </p>
+
+                        <button class="btn btn-outline-danger btn-sm" disabled>
+                            <i class="bi bi-trash me-2"></i>Supprimer définitivement mon compte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Gestion simple des onglets
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

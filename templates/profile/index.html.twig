@@ -1,0 +1,250 @@
+{% extends 'base.html.twig' %} {% block title %}Mon Profil - HabitaGo{% endblock %} {% block body %}
+<div class="container my-5">
+    {# En-tête #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center gap-4 mb-4">
+                <div class="avatar-lg">MJ</div>
+                <div>
+                    <h1 class="mb-1">Marie Joubert</h1>
+                    <p class="text-muted mb-2">Locataire depuis le 01/08/2024</p>
+                    <span class="status-badge">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Compte actif
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Alerte info #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-start" role="alert">
+                <i class="bi bi-info-circle-fill me-3 mt-1 flex-shrink-0"></i>
+                <div>
+                    <strong>Profil complet :</strong> Vos informations personnelles sont à jour et sécurisées.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Colonne principale #}
+        <div class="col-lg-8">
+            {# Informations personnelles #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-person-circle me-2"></i>Informations personnelles
+                        </h5>
+
+                        <div class="info-row">
+                            <span class="info-label">Nom complet</span>
+                            <span class="info-value">Marie Joubert</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse e-mail</span>
+                            <span class="info-value">marie.joubert@email.com</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Numéro de téléphone</span>
+                            <span class="info-value">+33 6 12 34 56 78</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Date de naissance</span>
+                            <span class="info-value">15 Janvier 1995</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Nationalité</span>
+                            <span class="info-value">Française</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-sm" disabled>
+                                <i class="bi bi-pencil-square me-2"></i>Modifier mes informations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Informations du logement #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-house-door me-2"></i>Informations du logement
+                        </h5>
+
+                        <div class="info-row">
+                            <span class="info-label">Adresse</span>
+                            <span class="info-value">15 Rue de la Paix, 75002 Paris</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Type de logement</span>
+                            <span class="info-value">Appartement T3</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Surface</span>
+                            <span class="info-value">65 m²</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Loyer mensuel</span>
+                            <span class="info-value fw-bold text-primary">850.00 €</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Date d'entrée</span>
+                            <span class="info-value">01 Août 2024</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Durée du bail</span>
+                            <span class="info-value">3 ans</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-outline-primary btn-sm" disabled>
+                                <i class="bi bi-download me-2"></i>Télécharger le bail
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Informations du bailleur #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-briefcase me-2"></i>Informations du bailleur
+                        </h5>
+
+                        <div class="info-row">
+                            <span class="info-label">Nom du bailleur</span>
+                            <span class="info-value">SCI Les Jardins</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse e-mail</span>
+                            <span class="info-value">
+                                <a href="mailto:contact@jardins.fr">contact@jardins.fr</a>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Numéro de téléphone</span>
+                            <span class="info-value">+33 1 23 45 67 89</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Adresse postale</span>
+                            <span class="info-value">25 Avenue des Champs, 75008 Paris</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-outline-secondary btn-sm" disabled>
+                                <i class="bi bi-envelope me-2"></i>Contacter le bailleur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Colonne latérale #}
+        <div class="col-lg-4">
+            {# Statistiques rapides #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-graph-up me-2"></i>Statistiques
+                        </h5>
+
+                        <div class="text-center mb-3">
+                            <div class="display-6 text-primary">100%</div>
+                            <small class="text-muted">Taux de paiement à temps</small>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <small class="text-muted">Incidents déclarés</small>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span>Total :</span>
+                                <strong>11</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Résolus :</span>
+                                <strong class="text-success">8</strong>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div>
+                            <small class="text-muted">Paiements</small>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span>Payés :</span>
+                                <strong class="text-success">5</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>En attente :</span>
+                                <strong class="text-warning">1</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Activité récente #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-clock-history me-2"></i>Activité récente
+                        </h5>
+
+                        <div class="small">
+                            <div class="mb-2 pb-2 border-bottom">
+                                <div class="text-primary fw-bold">Paiement effectué</div>
+                                <small class="text-muted">05 Janvier 2026</small>
+                            </div>
+                            <div class="mb-2 pb-2 border-bottom">
+                                <div class="text-primary fw-bold">Incident déclaré</div>
+                                <small class="text-muted">10 Janvier 2026</small>
+                            </div>
+                            <div class="mb-2 pb-2 border-bottom">
+                                <div class="text-primary fw-bold">Profil mis à jour</div>
+                                <small class="text-muted">08 Janvier 2026</small>
+                            </div>
+                            <div>
+                                <div class="text-primary fw-bold">Connexion</div>
+                                <small class="text-muted">Aujourd'hui 14:32</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Actions rapides #}
+            <div class="profile-section mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="profile-section-title mb-4">
+                            <i class="bi bi-lightning me-2"></i>Actions rapides
+                        </h5>
+
+                        <div class="d-grid gap-2">
+                            <a href="{{ path('settings') }}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-gear me-2"></i>Aller aux paramètres
+                            </a>
+                            <button class="btn btn-outline-danger btn-sm" disabled>
+                                <i class="bi bi-exclamation-triangle me-2"></i>Signaler un problème
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
