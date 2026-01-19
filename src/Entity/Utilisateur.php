@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,8 +20,7 @@ class Utilisateur
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $motDePasse = null;
+    #[ORM\Column(length: 255)]    private ?string $motDePasse = null;
 
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
@@ -74,6 +75,11 @@ class Utilisateur
         $this->motDePasse = $motDePasse;
 
         return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->motDePasse;
     }
 
     public function getPrenom(): ?string
@@ -165,4 +171,28 @@ class Utilisateur
 
         return $this;
     }
+
+    public function getUserIdentifier(): string
+{
+    return $this->email;
+}
+
+public function getRoles(): array
+{
+    // rôle par défaut
+    return [$this->role ?? 'ROLE_USER'];
+}
+
+public function eraseCredentials(): void
+{
+    // Si tu stockes des données temporaires sensibles, nettoie-les ici
+}
+
+    public function getInitials(): string
+    {
+        $prenom = $this->prenom ? strtoupper($this->prenom[0]) : '';
+        $nom = $this->nom ? strtoupper($this->nom[0]) : '';
+        return $prenom . $nom;
+    }
+
 }

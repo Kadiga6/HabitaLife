@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - HabitaGo{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="row w-100" style="max-width: 500px;">
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <h1 class="text-center mb-1">Créer un compte</h1>
+                    <p class="text-center text-muted mb-4">Rejoignez-nous et gérez vos logements</p>
+
+                  {% for message in app.flashes('success') %}
+                   <div class="alert alert-success alert-dismissible fade show" role="alert">
+                     <i class="bi bi-check-circle-fill me-2"></i>
+                             {{ message }}
+                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                   </div>
+                   {% endfor %}
+
+
+                    <form method="post" action="{{ path('app_register') }}" class="needs-validation" novalidate>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="prenom" class="form-label">Prénom</label>
+                                <input 
+                                    type="text" 
+                                    id="prenom" 
+                                    name="prenom" 
+                                    class="form-control {% if errors.prenom %}is-invalid{% endif %}" 
+                                    value="{{ prenom|default('') }}"
+                                    required
+                                    placeholder="Jean"
+                                />
+                                {% if errors.prenom %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ errors.prenom }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input 
+                                    type="text" 
+                                    id="nom" 
+                                    name="nom" 
+                                    class="form-control {% if errors.nom %}is-invalid{% endif %}" 
+                                    value="{{ nom|default('') }}"
+                                    required
+                                    placeholder="Dupont"
+                                />
+                                {% if errors.nom %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ errors.nom }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Adresse email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-control {% if errors.email %}is-invalid{% endif %}" 
+                                value="{{ email|default('') }}"
+                                required
+                                placeholder="vous@email.com"
+                            />
+                            {% if errors.email %}
+                                <div class="invalid-feedback d-block">
+                                    {{ errors.email }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="motDePasse" class="form-label">Mot de passe</label>
+                            <input 
+                                type="password" 
+                                id="motDePasse" 
+                                name="motDePasse" 
+                                class="form-control {% if errors.motDePasse %}is-invalid{% endif %}" 
+                                required
+                                placeholder="Au moins 6 caractères"
+                            />
+                            {% if errors.motDePasse %}
+                                <div class="invalid-feedback d-block">
+                                    {{ errors.motDePasse }}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle"></i>
+                                Minimum 6 caractères
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-control {% if errors.confirmPassword %}is-invalid{% endif %}" 
+                                required
+                                placeholder="Confirmez votre mot de passe"
+                            />
+                            {% if errors.confirmPassword %}
+                                <div class="invalid-feedback d-block">
+                                    {{ errors.confirmPassword }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="bi bi-person-plus-fill me-2"></i>
+                            S'inscrire
+                        </button>
+                    </form>
+
+                    <hr class="my-4"/>
+
+                    <p class="text-center text-muted">
+                        Vous avez déjà un compte?
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold">
+                            Se connecter
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center text-muted small mt-4">
+                <i class="bi bi-shield-lock"></i>
+                Vos données sont sécurisées et chiffrées
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-control.is-invalid:focus {
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn-primary {
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
