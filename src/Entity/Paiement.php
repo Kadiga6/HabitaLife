@@ -18,17 +18,25 @@ class Paiement
     #[ORM\JoinColumn(nullable: false)]
     private ?Contrat $contrat = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $datePaiement = null;
 
-    #[ORM\Column(length: 50)]
+    
+
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $moyenPaiement = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $statut = null;
+    #[ORM\Column(length: 255)]
+    private ?string $statut = 'en_attente';
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $dateCreation = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $periode = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $montant = null;
 
     public function getId(): ?int
     {
@@ -91,6 +99,30 @@ class Paiement
     public function setDateCreation(?\DateTime $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getPeriode(): ?string
+    {
+        return $this->periode;
+    }
+
+    public function setPeriode(string $periode): static
+    {
+        $this->periode = $periode;
+
+        return $this;
+    }
+
+    public function getMontant(): ?string
+    {
+        return $this->montant;
+    }
+
+    public function setMontant(string $montant): static
+    {
+        $this->montant = $montant;
 
         return $this;
     }

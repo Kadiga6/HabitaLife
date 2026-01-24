@@ -31,13 +31,18 @@ class ContratRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Contrat
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Récupère le contrat actif (non expiré) de l'utilisateur
+     */
+    public function findActiveContractForUser($user): ?Contrat
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.utilisateur = :user')
+            ->andWhere('c.dateDebut <= :today')
+            ->andWhere('c.dateFin IS NULL OR c.dateFin >= :today')
+            ->setParameter('user', $user)
+            ->setParameter('today', new \DateTime())
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

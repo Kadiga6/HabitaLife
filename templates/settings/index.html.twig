@@ -1,99 +1,318 @@
-{% extends 'base.html.twig' %} {% block title %}Paramètres du compte - HabitaGo{% endblock %} {% block body %}
-<div class="container my-5">
-    {# En-tête #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-3">
-                <i class="bi bi-gear me-3"></i>Paramètres du compte
+{% extends 'base.html.twig' %}
+{% block title %}Paramètres du compte - HabitaGo{% endblock %}
+{% block body %}
+<style>
+    /* Settings page animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Settings container */
+    .settings-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    /* Settings header */
+    .settings-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.6s ease-out;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.25);
+    }
+
+    .settings-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .settings-header p {
+        font-size: 1rem;
+        opacity: 0.95;
+        margin: 0;
+    }
+
+    /* Card modern */
+    .card-modern {
+        border: none;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .card-modern:hover {
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+    }
+
+    .card-modern .card-body {
+        padding: 2rem;
+    }
+
+    /* Sidebar navigation */
+    .sidebar-modern {
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .list-group-modern {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .list-group-item-modern {
+        background: white;
+        border: 2px solid #f0f3f7;
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+        color: #666 !important;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        cursor: pointer;
+    }
+
+    .list-group-item-modern:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.03);
+        color: #667eea !important;
+        transform: translateX(4px);
+    }
+
+    .list-group-item-modern.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        border-color: transparent;
+    }
+
+    /* Section title */
+    .profile-section-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f3f7;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .profile-section-title i {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.4rem;
+    }
+
+    /* Form styling */
+    .form-label {
+        color: #666;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid #f0f3f7;
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+    }
+
+    .form-control:disabled {
+        background: #f9f9f9;
+        color: #999;
+    }
+
+    /* Alert danger */
+    .alert-danger-modern {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(253, 126, 20, 0.05));
+        border: 2px solid #dc3545;
+        border-radius: 10px;
+        padding: 1.5rem;
+        color: #dc3545;
+    }
+
+    .alert-danger-modern i {
+        color: #dc3545;
+        font-size: 1.2rem;
+    }
+
+    .alert-danger-modern strong {
+        font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0.7rem 1.5rem;
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-modern:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-danger-modern {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        color: white !important;
+    }
+
+    .btn-danger-modern:hover {
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .sidebar-modern {
+            margin-bottom: 2rem;
+        }
+    }
+
+    /* Delays */
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+</style>
+
+<div class="settings-container">
+    <div class="container-lg">
+        {# En-tête #}
+        <div class="settings-header">
+            <h1>
+                <i class="bi bi-gear"></i>Paramètres du compte
             </h1>
-            <p class="text-muted">Gérez vos informations personnelles et votre sécurité</p>
+            <p>Gérez vos informations personnelles et votre sécurité</p>
         </div>
-    </div>
 
-    <div class="row">
-        {# Sidebar navigation #}
-        <div class="col-lg-3 mb-4">
-            <div class="list-group sticky-lg-top" style="top: 100px;">
-                <a href="#infos" class="list-group-item list-group-item-action active" data-bs-toggle="list">
-                    <i class="bi bi-person me-2"></i>Informations personnelles
-                </a>
+        <div class="row g-4">
+            {# Sidebar navigation #}
+            <div class="col-lg-3">
+                <div class="sidebar-modern list-group-modern sticky-lg-top" style="top: 120px;">
+                    <a href="#infos" class="list-group-item-modern active" data-bs-toggle="list">
+                        <i class="bi bi-person"></i>Informations personnelles
+                    </a>
 
-                <a href="#delete" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                    <i class="bi bi-trash me-2"></i>Suppression du compte
-                </a>
+                    <a href="#delete" class="list-group-item-modern" data-bs-toggle="list">
+                        <i class="bi bi-trash"></i>Suppression du compte
+                    </a>
+                </div>
             </div>
-        </div>
 
         {# Contenu principal #}
         <div class="col-lg-9">
             {# INFORMATIONS PERSONNELLES #}
-            <div id="infos" class="profile-section mb-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="profile-section-title mb-4">
-                            <i class="bi bi-person me-2"></i>Informations personnelles
-                        </h5>
+            <div id="infos" class="card-modern delay-2">
+                <div class="card-body">
+                    <h5 class="profile-section-title">
+                        <i class="bi bi-person"></i>Informations personnelles
+                    </h5>
 
-                        <form>
-                            <div class="row mb-2">
-                                <div class="col-md-6">
-                                    <label for="firstName" class="form-label small">Prénom</label>
-                                    <input type="text" class="form-control form-control-sm" id="firstName" value="Jean" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="lastName" class="form-label small">Nom</label>
-                                    <input type="text" class="form-control form-control-sm" id="lastName" value="Dupont" disabled>
-                                </div>
+                    <form method="POST" action="{{ path('settings_update_profile') }}">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">Prénom</label>
+                                <input type="text" class="form-control" id="firstName" name="prenom" value="{{ user.prenom }}" required>
                             </div>
-
-                            <div class="mb-2">
-                                <label for="email" class="form-label small">Adresse e-mail</label>
-                                <input type="email" class="form-control form-control-sm" id="email" value="jean.dupont@email.com" disabled>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="lastName" name="nom" value="{{ user.nom }}" required>
                             </div>
+                        </div>
 
-                            <div class="mb-2">
-                                <label for="phone" class="form-label small">Numéro de téléphone</label>
-                                <input type="tel" class="form-control form-control-sm" id="phone" value="+33 6 12 34 56 78" disabled>
-                            </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Adresse e-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="address" class="form-label small">Adresse</label>
-                                <input type="text" class="form-control form-control-sm" id="address" value="123 Rue de la Paix, 75000 Paris" disabled>
-                            </div>
+                        <div class="mb-4">
+                            <label for="dateCreation" class="form-label">Membre depuis</label>
+                            <input type="text" class="form-control" id="dateCreation" value="{{ user.dateCreation|date('d/m/Y') }}" disabled>
+                        </div>
 
-                            <button type="button" class="btn btn-primary btn-sm" disabled>
-                                <i class="bi bi-pencil-square me-2"></i>Modifier mes informations
-                            </button>
-                        </form>
-                    </div>
+                        <button type="submit" class="btn btn-modern">
+                            <i class="bi bi-pencil-square me-2"></i>Modifier mes informations
+                        </button>
+                    </form>
                 </div>
             </div>
 
-
-
             {# SUPPRESSION DU COMPTE #}
-            <div id="delete" class="profile-section">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="profile-section-title mb-4">
-                            <i class="bi bi-trash me-2"></i>Suppression du compte
-                        </h5>
+            <div id="delete" class="card-modern delay-3" style="margin-top: 2rem;">
+                <div class="card-body">
+                    <h5 class="profile-section-title">
+                        <i class="bi bi-trash"></i>Suppression du compte
+                    </h5>
 
-                        <h6 class="fw-bold mb-3 small">Zone de danger</h6>
+                    <h6 style="font-weight: 700; color: #dc3545; margin-bottom: 1.5rem; font-size: 1rem;">⚠️ Zone de danger</h6>
 
-                        <div class="alert alert-danger small mb-3">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <strong>Attention :</strong> Cette action est irréversible. Toutes vos données seront supprimées.
-                        </div>
+                    <div class="alert-danger-modern small mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Attention :</strong> Cette action est irréversible. Toutes vos données seront supprimées.
+                    </div>
 
-                        <p class="small text-muted mb-3">
-                            En supprimant votre compte, vous perdrez l'accès à tous vos services et données.
-                        </p>
+                    <p style="color: #666; margin-bottom: 2rem; font-size: 0.95rem;">
+                        En supprimant votre compte, vous perdrez l'accès à tous vos services et données.
+                    </p>
 
-                        <button class="btn btn-outline-danger btn-sm" disabled>
+                    <form method="POST" action="{{ path('settings_delete_account') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+                        {{ csrf_token('delete_account') }}
+                        <button type="submit" class="btn btn-danger-modern">
                             <i class="bi bi-trash me-2"></i>Supprimer définitivement mon compte
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -3,130 +3,85 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
+#[Route('/settings')]
 class SettingsController extends AbstractController
 {
-    #[Route('/settings', name: 'settings')]
+    #[Route('', name: 'settings')]
     public function index(): Response
     {
-        // Informations personnelles de l'utilisateur
-        $personalInfo = [
-            'card' => [
-                'title' => 'Informations personnelles',
-                'icon' => 'person',
-                'shadow' => true,
-            ],
-            'fields' => [
-                'firstName' => [
-                    'label' => 'Prénom',
-                    'value' => 'Jean',
-                    'type' => 'text',
-                ],
-                'lastName' => [
-                    'label' => 'Nom',
-                    'value' => 'Dupont',
-                    'type' => 'text',
-                ],
-                'email' => [
-                    'label' => 'Adresse e-mail',
-                    'value' => 'jean.dupont@email.com',
-                    'type' => 'email',
-                ],
-                'phone' => [
-                    'label' => 'Numéro de téléphone',
-                    'value' => '+33 6 12 34 56 78',
-                    'type' => 'tel',
-                ],
-                'address' => [
-                    'label' => 'Adresse',
-                    'value' => '123 Rue de la Paix, 75000 Paris',
-                    'type' => 'text',
-                ],
-            ],
-            'button' => [
-                'label' => 'Modifier mes informations',
-                'icon' => 'pencil-square',
-                'variant' => 'primary',
-                'disabled' => true,
-            ],
-        ];
-
-        // Paramètres de sécurité
-        $securitySettings = [
-            'card' => [
-                'title' => 'Sécurité',
-                'icon' => 'shield-lock',
-                'shadow' => true,
-            ],
-            'sections' => [
-                'password' => [
-                    'title' => 'Mot de passe',
-                    'items' => [
-                        [
-                            'name' => 'Modifier votre mot de passe',
-                            'description' => 'Dernière modification : 15 Novembre 2025',
-                            'button' => [
-                                'label' => 'Changer le mot de passe',
-                                'icon' => 'lock',
-                                'disabled' => true,
-                            ],
-                        ],
-                    ],
-                ],
-                'twoFactor' => [
-                    'title' => 'Authentification à deux facteurs (2FA)',
-                    'items' => [
-                        [
-                            'name' => 'Authentification par SMS',
-                            'description' => 'Sécurité additionnelle pour votre compte',
-                            'type' => 'toggle',
-                            'enabled' => false,
-                            'disabled' => true,
-                        ],
-                    ],
-                ],
-            ],
-            'alert' => [
-                'type' => 'warning',
-                'icon' => 'exclamation-triangle',
-                'title' => 'Conseil de sécurité :',
-                'message' => 'Utilisez un mot de passe fort et unique pour protéger votre compte.',
-            ],
-        ];
-
-        // Paramètres de suppression du compte
-        $accountDeletion = [
-            'card' => [
-                'title' => 'Suppression du compte',
-                'icon' => 'trash',
-                'shadow' => true,
-            ],
-            'section' => [
-                'title' => 'Zone de danger',
-            ],
-            'alert' => [
-                'type' => 'danger',
-                'icon' => 'exclamation-triangle-fill',
-                'title' => 'Attention :',
-                'message' => 'Cette action est irréversible. Toutes vos données seront supprimées.',
-            ],
-            'description' => 'En supprimant votre compte, vous perdrez l\'accès à tous vos services et données.',
-            'button' => [
-                'label' => 'Supprimer définitivement mon compte',
-                'icon' => 'trash',
-                'variant' => 'outline-danger',
-                'disabled' => true,
-            ],
-        ];
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
 
         return $this->render('settings/index.html.twig', [
-            'personalInfo' => $personalInfo,
-            'securitySettings' => $securitySettings,
-            'accountDeletion' => $accountDeletion,
+            'user' => $user,
         ]);
     }
+
+    #[Route('/update-profile', name: 'settings_update_profile', methods: ['POST'])]
+    public function updateProfile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Récupérer les données du formulaire
+        $prenom = $request->request->get('prenom');
+        $nom = $request->request->get('nom');
+        $email = $request->request->get('email');
+
+        // Validation basique
+        if (!$prenom || !$nom || !$email) {
+            $this->addFlash('error', 'Tous les champs sont obligatoires.');
+            return $this->redirectToRoute('settings');
+        }
+
+        // Vérifier si l'email est unique (en excluant l'utilisateur actuel)
+        $existingUser = $entityManager->getRepository($user::class)
+            ->findOneBy(['email' => $email]);
+        
+        if ($existingUser && $existingUser->getId() !== $user->getId()) {
+            $this->addFlash('error', 'Cet email est déjà utilisé par un autre compte.');
+            return $this->redirectToRoute('settings');
+        }
+
+        // Mettre à jour les données
+        $user->setPrenom($prenom);
+        $user->setNom($nom);
+        $user->setEmail($email);
+        $user->setDateModification(new \DateTime());
+
+        // Enregistrer
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vos informations personnelles ont été mises à jour avec succès !');
+        return $this->redirectToRoute('settings');
+    }
+
+    #[Route('/delete-account', name: 'settings_delete_account', methods: ['POST'])]
+    public function deleteAccount(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Vérifier le token CSRF pour la sécurité
+        if (!$this->isCsrfTokenValid('delete_account', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token de sécurité invalide.');
+            return $this->redirectToRoute('settings');
+        }
+
+        // Supprimer l'utilisateur
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        // Déconnecter l'utilisateur
+        return $this->redirectToRoute('app_logout');
+    }
 }
-?>

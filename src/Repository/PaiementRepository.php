@@ -16,28 +16,37 @@ class PaiementRepository extends ServiceEntityRepository
         parent::__construct($registry, Paiement::class);
     }
 
-    //    /**
-    //     * @return Paiement[] Returns an array of Paiement objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Récupère tous les paiements pour les contrats spécifiés
+     * @param array $contratIds Liste des IDs des contrats
+     * @return Paiement[]
+     */
+    public function findByContratIds(array $contratIds): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.contrat IN (:contratIds)')
+            ->setParameter('contratIds', $contratIds)
+            ->orderBy('p.periode', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
-    //    public function findOneBySomeField($value): ?Paiement
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Récupère les paiements en attente pour les contrats spécifiés
+     * @param array $contratIds Liste des IDs des contrats
+     * @return Paiement[]
+     */
+    public function findPendingPayments(array $contratIds): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.contrat IN (:contratIds)')
+            ->andWhere('p.statut IN (:statuts)')
+            ->setParameter('contratIds', $contratIds)
+            ->setParameter('statuts', ['en_attente', 'en_retard'])
+            ->orderBy('p.periode', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -3,135 +3,397 @@
 {% block title %}Paiements - HabitaGo{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-3">Mes Paiements</h1>
-            <p class="text-muted">Consultez l'historique de vos paiements de loyer</p>
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .payments-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.25);
+        animation: fadeInUp 0.6s ease-out;
+    }
+    .payments-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .payments-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out;
+        background: white;
+        position: relative;
+        height: 100%;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    }
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    .stat-card.success { --gradient-start: #28a745; --gradient-end: #20c997; }
+    .stat-card.warning { --gradient-start: #ffc107; --gradient-end: #ff9800; }
+    .stat-card.danger { --gradient-start: #dc3545; --gradient-end: #fd7e14; }
+    .stat-card-body { padding: 2rem 1.5rem; }
+    .stat-card-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+    }
+    .stat-card-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+    }
+    .btn-pay-primary {
+        padding: 0.9rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-pay-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    .card-modern {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        position: relative;
+    }
+    .card-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    .card-modern:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+    .card-header-modern {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+        border: none;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e0e7ff;
+        font-weight: 600;
+    }
+    .card-header-modern h5 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        color: #333;
+    }
+    .card-header-modern i {
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .table-modern {
+        margin-bottom: 0;
+    }
+    .table-modern thead {
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f3f7 100%);
+    }
+    .table-modern th {
+        border: none;
+        color: #667eea;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+    .table-modern tbody tr {
+        border-bottom: 1px solid #f0f3f7;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: linear-gradient(90deg, #f8f9ff 0%, #f0f3f7 100%);
+    }
+    .table-modern td {
+        padding: 1.2rem 1rem;
+        vertical-align: middle;
+        font-weight: 500;
+    }
+    .alert-modern {
+        border: none;
+        border-radius: 12px;
+        padding: 1.5rem;
+        animation: fadeInUp 0.6s ease-out;
+        margin-bottom: 1.5rem;
+    }
+    .alert-success-modern {
+        background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%);
+        border-left: 4px solid #28a745;
+        color: #155724;
+    }
+    .alert-info-modern {
+        background: linear-gradient(135deg, #d1ecf1 0%, #e7f5f8 100%);
+        border-left: 4px solid #667eea;
+        color: #0c5460;
+    }
+    .badge-success { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 600; display: inline-block; }
+    .badge-warning { background: linear-gradient(135deg, #ffa751 0%, #ffe259 100%); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 600; display: inline-block; }
+    .badge-danger { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 600; display: inline-block; }
+    .info-card {
+        background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%);
+        border: none;
+        border-radius: 15px;
+        border-left: 5px solid #28a745;
+        animation: slideInLeft 0.8s ease-out;
+    }
+    .info-card-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+    .info-card-header h5 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-weight: 600;
+    }
+    .btn-action-small {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.9rem;
+    }
+    .btn-action-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    .btn-action-primary:hover {
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-5">
+    <div class="payments-header px-4">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <i class="bi bi-credit-card" style="font-size: 3rem; opacity: 0.95;"></i>
+            </div>
+            <div class="col">
+                <h1 class="mb-2">Mes Paiements</h1>
+                <p class="mb-0">Consultez l'historique de vos paiements de loyer</p>
+            </div>
+            <div class="col-auto">
+                <a href="{{ path('payments_new') }}" class="btn-pay-primary">
+                    <i class="bi bi-credit-card"></i>Effectuer un paiement
+                </a>
+            </div>
         </div>
     </div>
 
-    {# Résumé des paiements #}
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="card border-success">
-                <div class="card-body">
-                    <h5 class="card-title text-success">Payés</h5>
-                    <p class="card-text display-6">5</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card border-warning">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">En attente</h5>
-                    <p class="card-text display-6">1</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card border-danger">
-                <div class="card-body">
-                    <h5 class="card-title text-danger">En retard</h5>
-                    <p class="card-text display-6">1</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="container-lg">
 
-    {# Tableau des paiements #}
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Historique des paiements</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Période</th>
-                                    <th>Montant</th>
-                                    <th>Statut</th>
-                                    <th>Date de paiement</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set payments = [
-                                    { period: 'Janvier 2024', amount: '850.00', status: 'paid', date: '05/01/2024' },
-                                    { period: 'Février 2024', amount: '850.00', status: 'paid', date: '03/02/2024' },
-                                    { period: 'Mars 2024', amount: '850.00', status: 'paid', date: '01/03/2024' },
-                                    { period: 'Avril 2024', amount: '850.00', status: 'paid', date: '05/04/2024' },
-                                    { period: 'Mai 2024', amount: '850.00', status: 'paid', date: '02/05/2024' },
-                                    { period: 'Juin 2024', amount: '850.00', status: 'pending', date: null },
-                                    { period: 'Juillet 2024', amount: '850.00', status: 'late', date: null }
-                                ] %}
 
-                                {% for payment in payments %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ payment.period }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="fw-bold">{{ payment.amount }} €</span>
-                                    </td>
-                                    <td>
-                                        {% if payment.status == 'paid' %}
-                                            <span class="badge bg-success">Payé</span>
-                                        {% elseif payment.status == 'pending' %}
-                                            <span class="badge bg-warning text-dark">En attente</span>
-                                        {% else %}
-                                            <span class="badge bg-danger">En retard</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if payment.date %}
-                                            {{ payment.date }}
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if payment.status == 'paid' %}
-                                            <button class="btn btn-sm btn-outline-primary" disabled>
-                                                <i class="bi bi-file-earmark-pdf"></i> Reçu
-                                            </button>
-                                        {% elseif payment.status == 'pending' %}
-                                            <button class="btn btn-sm btn-primary" disabled>
-                                                <i class="bi bi-credit-card"></i> Payer
-                                            </button>
-                                        {% else %}
-                                            <button class="btn btn-sm btn-danger" disabled>
-                                                <i class="bi bi-exclamation-triangle"></i> Régulariser
-                                            </button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+        {# Affichage des messages flash #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-modern alert-success-modern mb-3">
+                <i class="bi bi-check-circle me-2" style="font-size: 1.3rem;"></i>
+                <strong>Succès !</strong> {{ message }}
+            </div>
+        {% endfor %}
+
+        {# Résumé des paiements #}
+        <div class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-6">
+                <div class="stat-card success">
+                    <div class="stat-card-body">
+                        <div class="stat-card-title">
+                            <i class="bi bi-check-circle" style="color: #28a745; font-size: 1.2rem;"></i>Payés
+                        </div>
+                        <div class="stat-card-value" style="color: #28a745;">{{ stats.payes }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-6">
+                <div class="stat-card danger">
+                    <div class="stat-card-body">
+                        <div class="stat-card-title">
+                            <i class="bi bi-exclamation-circle" style="color: #dc3545; font-size: 1.2rem;"></i>En retard
+                        </div>
+                        <div class="stat-card-value" style="color: #dc3545;">{{ stats.en_retard }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Tableau des paiements #}
+        <div class="row">
+            <div class="col-12">
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <h5>
+                            <i class="bi bi-list-ul"></i>Historique des paiements
+                        </h5>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                    {% if paiements|length > 0 %}
+                        <div class="table-responsive" style="margin: 0;">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Période</th>
+                                        <th>Montant</th>
+                                        <th>Logement</th>
+                                        <th>Statut</th>
+                                        <th>Date de paiement</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for paiement in paiements %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ paiement.periode }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold">
+                                                {{ paiement.montant|number_format(2, ',', ' ') }} €
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ paiement.contrat.logement.adresse }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            {% if paiement.statut == 'paye' %}
+                                                <span class="badge-success">
+                                                    <i class="bi bi-check-circle me-1"></i>Payé
+                                                </span>
+                                            {% elseif paiement.statut == 'en_attente' %}
+                                                <span class="badge-warning">
+                                                    <i class="bi bi-hourglass-split me-1"></i>En attente
+                                                </span>
+                                            {% else %}
+                                                <span class="badge-danger">
+                                                    <i class="bi bi-exclamation-circle me-1"></i>En retard
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if paiement.datePaiement %}
+                                                {{ paiement.datePaiement|date('d/m/Y') }}
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if paiement.statut == 'paye' %}
+                                                <button class="btn-action-small" style="background: #84fab0; color: white;" disabled>
+                                                    <i class="bi bi-check-circle"></i> Payé
+                                                </button>
+                                            {% elseif paiement.statut in ['en_attente', 'en_retard'] %}
+                                                <a href="{{ path('payments_pay', {id: paiement.id}) }}" class="btn-action-small btn-action-primary">
+                                                    <i class="bi bi-credit-card"></i> Payer
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-modern alert-info-modern mb-0" style="margin: 2rem;">
+                            <i class="bi bi-info-circle me-2" style="font-size: 1.2rem;"></i>
+                            <strong>Aucun paiement enregistré</strong> — Cliquez sur le bouton "Effectuer un paiement" pour commencer.
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Informations supplémentaires #}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <h5>
+                            <i class="bi bi-lightbulb"></i>
+                            Informations importantes
+                        </h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                       {% if contrat %}
+    <p style="color: #155724; font-weight: 500; margin-bottom: 1rem;">
+        <i class="bi bi-calendar-event me-2"></i>
+        Le loyer est dû le
+        <strong>{{ contrat.dateDebut|date('d') }} de chaque mois</strong>.
+    </p>
+{% endif %}
+
+                        <p style="color: #155724; font-weight: 500; margin-bottom: 0;">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            En cas de retard, des pénalités peuvent s'appliquer. Pour toute question, contactez votre gestionnaire.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    {# Informations supplémentaires #}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="alert alert-info">
-                <h5 class="alert-heading">
-                    <i class="bi bi-info-circle"></i> Informations importantes
-                </h5>
-                <p class="mb-0">
-                    Le loyer est dû le <strong>1er de chaque mois</strong>. En cas de retard, des pénalités peuvent s'appliquer.
-                    Pour toute question concernant vos paiements, contactez votre gestionnaire.
-                </p>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
-

@@ -3,277 +3,684 @@
 {% block title %}Tableau de bord - HabitaGo{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    {# Message de bienvenue #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-3">Bonjour, Marie ! 👋</h1>
-            <p class="text-muted">Bienvenue sur votre espace locataire HabitaGo</p>
-        </div>
-    </div>
+<style>
+    /* Modern animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-    {# Alertes importantes #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="alert alert-warning d-flex align-items-center" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <div>
-                    <strong>Attention :</strong> Votre loyer de Janvier 2026 est en attente de paiement. Date limite : 05/01/2026
-                    <a href="/payments" class="alert-link ms-2">Voir les paiements →</a>
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    /* Dashboard container */
+    .dashboard-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    /* Welcome header */
+    .welcome-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+        animation: fadeInUp 0.6s ease-out;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.25);
+    }
+
+    .welcome-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+    }
+
+    /* Alert modern */
+    .alert-modern {
+        border: none;
+        border-radius: 10px;
+        border-left: 5px solid;
+        padding: 1.5rem;
+        animation: fadeInUp 0.6s ease-out;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .alert-modern-warning {
+        border-left-color: #ffc107;
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.05));
+    }
+
+    .alert-modern-warning i {
+        color: #ff9800;
+        font-size: 1.3rem;
+    }
+
+    .alert-modern-warning strong {
+        color: #ff9800;
+    }
+
+    .alert-modern-warning a {
+        color: #ffc107;
+        font-weight: 600;
+    }
+
+    /* Card modern */
+    .card-modern {
+        border: none;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        height: 100%;
+    }
+
+    .card-modern:hover {
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+    }
+
+    .card-header-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .card-header-modern.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card-header-modern.success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .card-header-modern.info {
+        background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%);
+    }
+
+    .card-header-modern.danger {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    }
+
+    .card-header-modern h5 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    .card-header-modern i {
+        font-size: 1.5rem;
+    }
+
+    /* Summary stat */
+    .stat-summary {
+        padding: 2rem;
+    }
+
+    .stat-title {
+        color: #999;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px solid #f0f3f7;
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .stat-item span {
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .stat-item strong {
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Quick action buttons */
+    .quick-actions-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .action-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 1.5rem 1rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .action-btn i {
+        font-size: 1.8rem;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-5px);
+    }
+
+    .action-btn.success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    .action-btn.danger {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        color: white;
+    }
+
+    .action-btn.info {
+        background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%);
+        color: white;
+    }
+
+    .action-btn.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+    }
+
+    /* Incidents list */
+    .incident-item {
+        padding: 1.2rem 0;
+        border-bottom: 1px solid #f0f3f7;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        transition: all 0.3s ease;
+    }
+
+    .incident-item:last-child {
+        border-bottom: none;
+    }
+
+    .incident-item:hover {
+        background: #f9f9f9;
+        padding: 1.2rem;
+        margin: 0 -1.2rem;
+        border-radius: 8px;
+    }
+
+    .incident-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    .incident-date {
+        font-size: 0.85rem;
+        color: #999;
+    }
+
+    /* Progress bars */
+    .progress-stat {
+        margin-bottom: 2rem;
+    }
+
+    .progress-stat h6 {
+        color: #666;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    .progress-stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-stat-row span {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .progress-stat-row strong {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .progress {
+        height: 8px;
+        background: #f0f3f7;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+        transition: width 0.6s ease;
+    }
+
+    /* Badge */
+    .badge-modern {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-urgente {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        color: white;
+    }
+
+    .badge-en-cours {
+        background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%);
+        color: white;
+    }
+
+    .badge-en-attente {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        color: white;
+    }
+
+    .badge-actif {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
+    /* Info section */
+    .info-section {
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .info-item {
+        margin-bottom: 2rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-item strong {
+        color: #667eea;
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .info-item a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .info-item a:hover {
+        text-decoration: underline;
+    }
+
+    /* Container */
+    .container-lg {
+        max-width: 1200px;
+    }
+
+    /* Delays for staggered animation */
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+</style>
+
+<div class="dashboard-container">
+    <div class="container-lg">
+        {# Welcome header #}
+        <div class="welcome-header">
+            <h1>Bonjour, {{ app.user.prenom }} ! 👋</h1>
+            <p>Bienvenue sur votre espace locataire HabitaGo</p>
+        </div>
+
+        {# Alert #}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert-modern alert-modern-warning d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div style="flex: 1;">
+                        <strong>Attention :</strong> Votre loyer de Janvier 2026 est en attente de paiement. Date limite : 05/01/2026
+                        <a href="/payments" class="ms-3">Voir les paiements →</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Cartes de résumé principales #}
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-cash-coin"></i> Paiements</h5>
+        {# Summary cards #}
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="card-modern delay-1">
+                    <div class="card-header-modern primary">
+                        <i class="bi bi-cash-coin"></i>
+                        <h5>Paiements</h5>
+                    </div>
+                    <div class="stat-summary">
+                        <p class="stat-title">Loyer mensuel</p>
+                        <div class="stat-value">850.00 €</div>
+                        <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <span class="badge-modern badge-en-attente">1 en attente</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="text-success">Payés :</span>
+                            <strong>5</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span class="text-danger">En retard :</span>
+                            <strong>0</strong>
+                        </div>
+                        <a href="/payments" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
+                            <i class="bi bi-arrow-right-circle me-2"></i> Voir l'historique
+                        </a>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <p class="text-muted mb-1">Loyer mensuel</p>
-                            <h3 class="mb-0">850.00 €</h3>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card-modern delay-2">
+                    <div class="card-header-modern info">
+                        <i class="bi bi-lightning-charge"></i>
+                        <h5>Consommations</h5>
+                    </div>
+                    <div class="stat-summary">
+                        <p class="stat-title">Totaux</p>
+                        <div class="stat-value">Détails →</div>
+                        <div class="stat-item">
+                            <span>Électricité :</span>
+                            <strong>{{ totauxConsommation.electricite|number_format(2, ',', ' ') }} kWh</strong>
                         </div>
-                        <div class="text-end">
-                            <span class="badge bg-warning text-dark">1 en attente</span>
+                        <div class="stat-item">
+                            <span>Eau :</span>
+                            <strong>{{ totauxConsommation.eau|number_format(2, ',', ' ') }} m³</strong>
                         </div>
+                        <div class="stat-item">
+                            <span>Gaz :</span>
+                            <strong>{{ totauxConsommation.gaz|number_format(2, ',', ' ') }} kWh</strong>
+                        </div>
+                        <a href="/consumption" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
+                            <i class="bi bi-arrow-right-circle me-2"></i> Voir les détails
+                        </a>
                     </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-success">Payés :</span>
-                        <strong>5</strong>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card-modern delay-3">
+                    <div class="card-header-modern danger">
+                        <i class="bi bi-tools"></i>
+                        <h5>Incidents</h5>
                     </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-danger">En retard :</span>
-                        <strong>0</strong>
+                    <div class="stat-summary">
+                        <p class="stat-title">État actuel</p>
+                        <div class="stat-value">3 actifs</div>
+                        <div class="stat-item">
+                            <span class="text-warning">En attente :</span>
+                            <strong>2</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span class="text-info">En cours :</span>
+                            <strong>1</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span class="text-success">Résolus :</span>
+                            <strong>8</strong>
+                        </div>
+                        <a href="/issues" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
+                            <i class="bi bi-arrow-right-circle me-2"></i> Gérer les incidents
+                        </a>
                     </div>
-                    <a href="/payments" class="btn btn-outline-primary btn-sm w-100">
-                        <i class="bi bi-arrow-right-circle"></i> Voir l'historique
-                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 border-info">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Consommations</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <p class="text-muted mb-1">Ce mois-ci</p>
-                        <h3 class="mb-0">78.50 €</h3>
+        {# Quick actions #}
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="quick-actions-card">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h5 style="color: #333; font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin: 0;">
+                            <i class="bi bi-lightning-fill"></i>
+                            Actions rapides
+                        </h5>
                     </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Électricité :</span>
-                        <strong>245 kWh</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Eau :</span>
-                        <strong>8.5 m³</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span>Gaz :</span>
-                        <strong>156 kWh</strong>
-                    </div>
-                    <a href="/consumption" class="btn btn-outline-info btn-sm w-100">
-                        <i class="bi bi-arrow-right-circle"></i> Voir les détails
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="bi bi-tools"></i> Incidents</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <p class="text-muted mb-1">État actuel</p>
-                        <h3 class="mb-0">3 actifs</h3>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-warning">En attente :</span>
-                        <strong>2</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-info">En cours :</span>
-                        <strong>1</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                        <span class="text-success">Résolus :</span>
-                        <strong>8</strong>
-                    </div>
-                    <a href="/issues" class="btn btn-outline-danger btn-sm w-100">
-                        <i class="bi bi-arrow-right-circle"></i> Gérer les incidents
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {# Actions rapides #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Actions rapides</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 mb-3 mb-md-0">
-                            <button class="btn btn-success w-100" disabled>
-                                <i class="bi bi-credit-card"></i><br>
-                                Payer mon loyer
-                            </button>
-                        </div>
-                        <div class="col-md-3 mb-3 mb-md-0">
-                            <button class="btn btn-danger w-100" disabled>
-                                <i class="bi bi-plus-circle"></i><br>
-                                Déclarer un incident
-                            </button>
-                        </div>
-                        <div class="col-md-3 mb-3 mb-md-0">
-                            <button class="btn btn-info w-100" disabled>
-                                <i class="bi bi-file-earmark-text"></i><br>
-                                Mes documents
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <button class="action-btn success w-100">
+                                <i class="bi bi-credit-card"></i>
+                                <span>Payer mon loyer</span>
                             </button>
                         </div>
                         <div class="col-md-3">
-                            <button class="btn btn-warning w-100" disabled>
-                                <i class="bi bi-envelope"></i><br>
-                                Contacter le bailleur
+                            <button class="action-btn danger w-100">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Déclarer un incident</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="action-btn info w-100">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>Mes documents</span>
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="action-btn warning w-100">
+                                <i class="bi bi-envelope"></i>
+                                <span>Contacter le bailleur</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Incidents récents #}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="bi bi-exclamation-circle"></i> Incidents en cours</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div>
-                                <strong>#011</strong> - Fuite d'eau sous l'évier
-                                <br>
-                                <small class="text-muted">Déclaré le 10/01/2026</small>
-                            </div>
-                            <span class="badge bg-danger">Urgente</span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div>
-                                <strong>#010</strong> - Radiateur chambre ne chauffe pas
-                                <br>
-                                <small class="text-muted">Déclaré le 08/01/2026</small>
-                            </div>
-                            <span class="badge bg-info">En cours</span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div>
-                                <strong>#009</strong> - Prise électrique cuisine HS
-                                <br>
-                                <small class="text-muted">Déclaré le 05/01/2026</small>
-                            </div>
-                            <span class="badge bg-warning text-dark">En attente</span>
-                        </div>
+        {# Incidents and Statistics #}
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="card-modern">
+                    <div class="card-header-modern danger">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <h5>Incidents en cours</h5>
                     </div>
-                    <div class="mt-3">
-                        <a href="/issues" class="btn btn-outline-danger btn-sm w-100">Voir tous les incidents →</a>
+                    <div style="padding: 2rem;">
+                        <div class="incident-item">
+                            <div>
+                                <div class="incident-title">#011 - Fuite d'eau sous l'évier</div>
+                                <div class="incident-date">Déclaré le 10/01/2026</div>
+                            </div>
+                            <span class="badge-modern badge-urgente">Urgente</span>
+                        </div>
+                        <div class="incident-item">
+                            <div>
+                                <div class="incident-title">#010 - Radiateur chambre ne chauffe pas</div>
+                                <div class="incident-date">Déclaré le 08/01/2026</div>
+                            </div>
+                            <span class="badge-modern badge-en-cours">En cours</span>
+                        </div>
+                        <div class="incident-item">
+                            <div>
+                                <div class="incident-title">#009 - Prise électrique cuisine HS</div>
+                                <div class="incident-date">Déclaré le 05/01/2026</div>
+                            </div>
+                            <span class="badge-modern badge-en-attente">En attente</span>
+                        </div>
+                        <a href="/issues" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1.5rem; font-weight: 600;">
+                            Voir tous les incidents →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card-modern">
+                    <div class="card-header-modern success">
+                        <i class="bi bi-graph-up"></i>
+                        <h5>Statistiques</h5>
+                    </div>
+                    <div style="padding: 2rem;">
+                        <div class="progress-stat">
+                            <h6>Consommation d'énergie</h6>
+                            <div class="progress-stat-row">
+                                <span>Performance :</span>
+                                <strong style="color: #28a745;">-15% vs mois dernier</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 70%; background: linear-gradient(90deg, #28a745 0%, #20c997 100%);"></div>
+                            </div>
+                            <small style="color: #28a745; display: block; margin-top: 0.5rem;"><i class="bi bi-arrow-down"></i> Excellente performance !</small>
+                        </div>
+
+                        <div class="progress-stat">
+                            <h6>Historique de paiements</h6>
+                            <div class="progress-stat-row">
+                                <span>Taux de paiement à temps :</span>
+                                <strong style="color: #28a745;">100%</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 100%; background: linear-gradient(90deg, #28a745 0%, #20c997 100%);"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-stat">
+                            <h6>Temps de résolution des incidents</h6>
+                            <div class="progress-stat-row">
+                                <span>Moyenne :</span>
+                                <strong>3.2 jours</strong>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 85%; background: linear-gradient(90deg, #17a2b8 0%, #0dcaf0 100%);"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Statistiques</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">Consommation d'énergie</h6>
-                        <div class="progress mb-2" style="height: 25px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">
-                                <strong>-15% vs mois dernier</strong>
-                            </div>
-                        </div>
-                        <small class="text-success"><i class="bi bi-arrow-down"></i> Excellente performance !</small>
+        {# Housing info #}
+        <div class="row">
+            <div class="col-12">
+                <div class="card-modern">
+                    <div class="card-header-modern" style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+                        <i class="bi bi-house-door"></i>
+                        <h5>Informations de votre logement</h5>
                     </div>
-
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">Historique de paiements</h6>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Taux de paiement à temps :</span>
-                            <strong class="text-success">100%</strong>
-                        </div>
-                        <div class="progress mt-2" style="height: 10px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h6 class="text-muted mb-2">Temps de résolution des incidents</h6>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span>Moyenne :</span>
-                            <strong>3.2 jours</strong>
-                        </div>
-                        <div class="progress mt-2" style="height: 10px;">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 85%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {# Informations du logement #}
+                   <div class="info-section">
     <div class="row">
-        <div class="col-12">
-            <div class="card border-secondary">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-house-door"></i> Informations de votre logement</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <strong>Adresse :</strong><br>
-                            15 Rue de la Paix<br>
-                            75002 Paris
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <strong>Type :</strong><br>
-                            Appartement T3<br>
-                            65 m²
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <strong>Bail :</strong><br>
-                            Depuis le 01/08/2024<br>
-                            <span class="badge bg-success">Actif</span>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <strong>Bailleur :</strong><br>
-                            SCI Les Jardins<br>
-                            <a href="mailto:contact@jardins.fr">contact@jardins.fr</a>
-                        </div>
-                    </div>
+
+        {# ================= ADRESSE ================= #}
+       <div class="col-md-4">
+    <div class="info-item">
+        <strong>Adresse :</strong><br>
+
+        {% if logement %}
+            {{ logement.adresse }}<br>
+            {{ logement.codePostal }} {{ logement.ville }}
+        {% else %}
+            <span class="text-muted">Aucun logement associé</span>
+        {% endif %}
+    </div>
+</div>
+
+{# ================= TYPE DE LOGEMENT ================= #}
+<div class="col-md-4">
+    <div class="info-item">
+        <strong>Type :</strong><br>
+
+        {% if logement %}
+            {{ logement.typeLogement }}
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endif %}
+    </div>
+</div>
+
+        {# ================= CONTRAT / BAIL ================= #}
+     <div class="col-md-4">
+    <div class="info-item">
+        <strong>Bail :</strong><br>
+
+        {% if contrat %}
+            Depuis le {{ contrat.dateDebut|date('d/m/Y') }}<br>
+
+            {% if contrat.statut == 'actif' %}
+                <span class="badge-modern badge-actif">Actif</span>
+            {% else %}
+                <span class="badge-modern badge-inactif">Inactif</span>
+            {% endif %}
+        {% else %}
+            <span class="text-muted">Aucun contrat actif</span>
+        {% endif %}
+    </div>
+</div>
+
+    </div>
+</div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+    
 </div>
 {% endblock %}

@@ -3,160 +3,516 @@
 {% block title %}Consommations - HabitaGo{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="mb-3">Mes Consommations</h1>
-            <p class="text-muted">Suivez vos consommations d'énergie et d'eau</p>
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .consumption-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.25);
+        animation: fadeInUp 0.6s ease-out;
+    }
+    .consumption-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .consumption-header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out;
+        background: white;
+        position: relative;
+        height: 100%;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    }
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    .stat-card.electricity { --gradient-start: #ffc107; --gradient-end: #ff9800; }
+    .stat-card.water { --gradient-start: #17a2b8; --gradient-end: #0dcaf0; }
+    .stat-card.gas { --gradient-start: #dc3545; --gradient-end: #fd7e14; }
+    .stat-card.location { --gradient-start: #28a745; --gradient-end: #20c997; }
+    .stat-card-body { padding: 2rem 1.5rem; }
+    .stat-card-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+    }
+    .stat-card-value {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+    }
+    .stat-card-subtitle {
+        font-size: 0.85rem;
+        opacity: 0.7;
+    }
+    .btn-add-consumption {
+        padding: 0.8rem 1.8rem;
+        border-radius: 12px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-add-consumption:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    .card-modern {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        position: relative;
+    }
+    .card-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    .card-modern:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+    .card-header-modern {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+        border: none;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e0e7ff;
+        font-weight: 600;
+    }
+    .card-header-modern h5 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        color: #333;
+    }
+    .card-header-modern i {
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .table-modern {
+        margin-bottom: 0;
+    }
+    .table-modern thead {
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f3f7 100%);
+    }
+    .table-modern th {
+        border: none;
+        color: #667eea;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+    .table-modern tbody tr {
+        border-bottom: 1px solid #f0f3f7;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: linear-gradient(90deg, #f8f9ff 0%, #f0f3f7 100%);
+    }
+    .table-modern td {
+        padding: 1.2rem 1rem;
+        vertical-align: middle;
+        font-weight: 500;
+    }
+    .alert-modern {
+        border: none;
+        border-radius: 12px;
+        padding: 1.5rem;
+        animation: fadeInUp 0.6s ease-out;
+        margin-bottom: 1.5rem;
+    }
+    .alert-warning-modern {
+        background: linear-gradient(135deg, #fff3cd 0%, #fffbea 100%);
+        border-left: 4px solid #ff9800;
+        color: #856404;
+    }
+    .alert-info-modern {
+        background: linear-gradient(135deg, #d1ecf1 0%, #e7f5f8 100%);
+        border-left: 4px solid #667eea;
+        color: #0c5460;
+    }
+    .tips-card {
+        background: linear-gradient(135deg, #d4edda 0%, #e8f5e9 100%);
+        border: none;
+        border-radius: 15px;
+        border-left: 5px solid #28a745;
+        animation: slideInLeft 0.8s ease-out;
+    }
+    .tips-card-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+    .tips-card-header h5 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-weight: 600;
+    }
+    .tips-list li {
+        margin-bottom: 1rem;
+        font-weight: 500;
+        color: #155724;
+    }
+    .tips-list i {
+        color: #28a745;
+        margin-right: 0.7rem;
+    }
+    .icon-electricity { color: #ffc107; font-size: 1.2rem; }
+    .icon-water { color: #17a2b8; font-size: 1.2rem; }
+    .icon-gas { color: #dc3545; font-size: 1.2rem; }
+</style>
+
+<div class="container-fluid py-5">
+    {# En-tête avec bouton d'ajout #}
+    <div class="consumption-header px-4">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <i class="bi bi-lightning-charge" style="font-size: 3rem; opacity: 0.95;"></i>
+            </div>
+            <div class="col">
+                <h1 class="mb-2">Mes Consommations</h1>
+                <p class="mb-0">Suivez vos consommations d'énergie et d'eau</p>
+            </div>
+            <div class="col-auto">
+                <a href="{{ path('consumption_new') }}" class="btn-add-consumption">
+                    <i class="bi bi-plus-circle"></i>Ajouter un relevé
+                </a>
+            </div>
         </div>
     </div>
 
-    {# Résumé des consommations du mois en cours #}
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card border-primary">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">Électricité</h5>
-                    <p class="card-text display-6">245 kWh</p>
-                    <small class="text-muted">Ce mois-ci</small>
+    <div class="container-lg">
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card electricity">
+                    <div class="stat-card-body">
+                        <div class="stat-card-title">
+                            <i class="bi bi-lightning-charge icon-electricity"></i>Électricité
+                        </div>
+                        <div class="stat-card-value">
+                            {% set elecTotal = 0 %}
+                            {% for conso in consommations %}
+                                {% if conso.type|lower == 'electricite' %}
+                                    {% set elecTotal = elecTotal + conso.valeur %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if elecTotal > 0 %}
+                                {{ elecTotal|number_format(2, ',', ' ') }} kWh
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+                        <div class="stat-card-subtitle">Ce mois-ci</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-info">
-                <div class="card-body">
-                    <h5 class="card-title text-info">Eau</h5>
-                    <p class="card-text display-6">8.5 m³</p>
-                    <small class="text-muted">Ce mois-ci</small>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card water">
+                    <div class="stat-card-body">
+                        <div class="stat-card-title">
+                            <i class="bi bi-droplet icon-water"></i>Eau
+                        </div>
+                        <div class="stat-card-value">
+                            {% set eauTotal = 0 %}
+                            {% for conso in consommations %}
+                                {% if conso.unite == 'm³' %}
+                                    {% set eauTotal = eauTotal + conso.valeur %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if eauTotal > 0 %}
+                                {{ eauTotal|number_format(2, ',', ' ') }} m³
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+                        <div class="stat-card-subtitle">Ce mois-ci</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-warning">
-                <div class="card-body">
-                    <h5 class="card-title text-warning">Gaz</h5>
-                    <p class="card-text display-6">156 kWh</p>
-                    <small class="text-muted">Ce mois-ci</small>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card gas">
+                    <div class="stat-card-body">
+                        <div class="stat-card-title">
+                            <i class="bi bi-fire icon-gas"></i>Gaz
+                        </div>
+                        <div class="stat-card-value">
+                            {% set gazTotal = 0 %}
+                            {% for conso in consommations %}
+                                {% if conso.type == 'gaz' %}
+                                    {% set gazTotal = gazTotal + conso.valeur %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if gazTotal > 0 %}
+                                {{ gazTotal|number_format(2, ',', ' ') }} kWh
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+                        <div class="stat-card-subtitle">Ce mois-ci</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-success">
-                <div class="card-body">
-                    <h5 class="card-title text-success">Coût total</h5>
-                    <p class="card-text display-6">78.50 €</p>
-                    <small class="text-muted">Ce mois-ci</small>
+          {% if logement %}
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card location">
+            <div class="stat-card-body">
+                <div class="stat-card-title">
+                    <i class="bi bi-house-door" style="color: #28a745;"></i> Logement
+                </div>
+                <div class="stat-card-value" style="font-size: 1.2rem; color: #155724;">
+                    {{ logement.adresse }}
+                </div>
+                <div class="stat-card-subtitle">
+                    {{ logement.codePostal }} {{ logement.ville }}
                 </div>
             </div>
         </div>
     </div>
-
-    {# Graphique de consommation (placeholder) #}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Évolution mensuelle</h5>
+{% else %}
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-card-body text-muted">
+                <div class="stat-card-title">
+                    <i class="bi bi-house-door"></i> Logement
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info" role="alert">
-                        <i class="bi bi-graph-up"></i> Graphique à venir : visualisez l'évolution de vos consommations sur les 12 derniers mois
+                <div class="stat-card-value">
+                    Aucun logement associé
+                </div>
+                <div class="stat-card-subtitle">
+                    Ajoutez un logement pour voir les informations
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+        </div>
+
+        {# Graphique de consommation #}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <h5>
+                            <i class="bi bi-graph-up"></i>Évolution mensuelle
+                        </h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem; background: linear-gradient(135deg, #f8f9ff 0%, #f0f3f7 100%);">
+                        <div class="alert alert-modern alert-info-modern mb-0">
+                            <i class="bi bi-graph-up me-2" style="font-size: 1.2rem;"></i>
+                            <strong>Graphique à venir :</strong> Visualisez l'évolution de vos consommations sur les 12 derniers mois
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Tableau des consommations détaillées #}
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Historique des consommations</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Période</th>
-                                    <th>Électricité</th>
-                                    <th>Eau</th>
-                                    <th>Gaz</th>
-                                    <th>Coût total</th>
-                                    <th>Tendance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set consumptions = [
-                                    { period: 'Janvier 2026', electricity: '275', water: '9.2', gas: '210', cost: '95.80', trend: 'up' },
-                                    { period: 'Décembre 2025', electricity: '290', water: '8.8', gas: '225', cost: '102.50', trend: 'up' },
-                                    { period: 'Novembre 2025', electricity: '260', water: '8.5', gas: '195', cost: '88.20', trend: 'down' },
-                                    { period: 'Octobre 2025', electricity: '245', water: '8.9', gas: '165', cost: '79.30', trend: 'down' },
-                                    { period: 'Septembre 2025', electricity: '220', water: '9.1', gas: '45', cost: '62.50', trend: 'down' },
-                                    { period: 'Août 2025', electricity: '235', water: '10.2', gas: '30', cost: '65.40', trend: 'up' },
-                                    { period: 'Juillet 2025', electricity: '250', water: '11.5', gas: '25', cost: '70.80', trend: 'up' }
-                                ] %}
+        {# Tableau des consommations détaillées #}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <h5>
+                            <i class="bi bi-list-ul"></i>Historique des consommations
+                        </h5>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        {% if consommations|length > 0 %}
+                            <div class="table-responsive" style="margin: 0;">
+                                <table class="table table-modern">
+                                    <thead>
+                                        <tr>
+                                            <th>Période</th>
+                                            <th>Électricité</th>
+                                            <th>Eau</th>
+                                            <th>Gaz</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {# Grouper les consommations par période #}
+                                        {% set periodes = {} %}
+                                        {% for conso in consommations %}
+                                            {% set periodeKey = conso.periodeDebut|date('Y-m-d') ~ '_' ~ conso.periodeFin|date('Y-m-d') %}
+                                            {% if periodes[periodeKey] is not defined %}
+                                                {% set periodes = periodes|merge({(periodeKey): {'debut': conso.periodeDebut, 'fin': conso.periodeFin, 'consommations': []}}) %}
+                                            {% endif %}
+                                            {% set periodes = periodes|merge({(periodeKey): {'debut': periodes[periodeKey].debut, 'fin': periodes[periodeKey].fin, 'consommations': periodes[periodeKey].consommations|merge([conso])}}) %}
+                                        {% endfor %}
 
-                                {% for consumption in consumptions %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ consumption.period }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="text-primary">{{ consumption.electricity }} kWh</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-info">{{ consumption.water }} m³</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-warning">{{ consumption.gas }} kWh</span>
-                                    </td>
-                                    <td>
-                                        <span class="fw-bold">{{ consumption.cost }} €</span>
-                                    </td>
-                                    <td>
-                                        {% if consumption.trend == 'up' %}
-                                            <span class="text-danger">
-                                                <i class="bi bi-arrow-up"></i> Hausse
-                                            </span>
-                                        {% elseif consumption.trend == 'down' %}
-                                            <span class="text-success">
-                                                <i class="bi bi-arrow-down"></i> Baisse
-                                            </span>
-                                        {% else %}
-                                            <span class="text-muted">
-                                                <i class="bi bi-dash"></i> Stable
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                        {# Afficher les périodes groupées #}
+                                        {% for periodeKey, periode in periodes %}
+                                            <tr>
+                                                <td>
+                                                    <strong>
+                                                        {{ periode.debut|date('d/m/Y') }} → {{ periode.fin|date('d/m/Y') }}
+                                                    </strong>
+                                                </td>
+                                                <td>
+                                                    {% set elecTotal = 0 %}
+                                                    {% for conso in periode.consommations %}
+                                                        {% if conso.type|lower == 'electricite' %}
+                                                            {# Ici on suppose que c'est électricité si unite=kWh et type est electricite #}
+                                                            {% set elecTotal = elecTotal + conso.valeur %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if elecTotal > 0 %}
+                                                        <span class="badge badge-electricity">
+                                                            <i class="bi bi-lightning-charge me-1"></i>{{ elecTotal|number_format(2, ',', ' ') }} kWh
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% set eauTotal = 0 %}
+                                                    {% for conso in periode.consommations %}
+                                                        {% if conso.unite == 'm³' %}
+                                                            {% set eauTotal = eauTotal + conso.valeur %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if eauTotal > 0 %}
+                                                        <span class="badge badge-water">
+                                                            <i class="bi bi-droplet me-1"></i>{{ eauTotal|number_format(2, ',', ' ') }} m³
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% set gazTotal = 0 %}
+                                                    {% for conso in periode.consommations %}
+                                                        {% if conso.type == 'gaz' %}
+                                                            {% set gazTotal = gazTotal + conso.valeur %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if gazTotal > 0 %}
+                                                        <span class="badge badge-gas">
+                                                            <i class="bi bi-fire me-1"></i>{{ gazTotal|number_format(2, ',', ' ') }} kWh
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-modern alert-info-modern mb-0" style="margin: 2rem;">
+                                <i class="bi bi-info-circle me-2" style="font-size: 1.2rem;"></i>
+                                <strong>Aucune consommation enregistrée</strong> — Cliquez sur le bouton "Ajouter un relevé" pour commencer à suivre vos consommations.
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Conseils d'économie #}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Conseils pour réduire vos consommations</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Éteignez les appareils en veille pour économiser jusqu'à 10% sur votre facture</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Privilégiez les douches courtes aux bains pour réduire votre consommation d'eau</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Baissez le chauffage d'1°C pour économiser 7% sur votre consommation de gaz</li>
-                        <li class="mb-0"><i class="bi bi-check-circle text-success"></i> Utilisez vos électroménagers en heures creuses quand c'est possible</li>
-                    </ul>
+        {# Conseils d'économie #}
+        <div class="row">
+            <div class="col-12">
+                <div class="tips-card">
+                    <div class="tips-card-header">
+                        <h5>
+                            <i class="bi bi-lightbulb"></i>
+                            Conseils pour réduire vos consommations
+                        </h5>
+                    </div>
+                    <div class="card-body" style="padding: 2rem;">
+                        <ul class="list-unstyled mb-0 tips-list">
+                            <li><i class="bi bi-check-circle"></i> Éteignez les appareils en veille pour économiser jusqu'à 10% sur votre facture</li>
+                            <li><i class="bi bi-check-circle"></i> Privilégiez les douches courtes aux bains pour réduire votre consommation d'eau</li>
+                            <li><i class="bi bi-check-circle"></i> Baissez le chauffage d'1°C pour économiser 7% sur votre consommation de gaz</li>
+                            <li class="mb-0"><i class="bi bi-check-circle"></i> Utilisez vos électroménagers en heures creuses quand c'est possible</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+       </div>
 </div>
+
+<style>
+    .badge-electricity {
+        background: rgba(255, 193, 7, 0.15);
+        color: #ff9800;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+    .badge-water {
+        background: rgba(23, 162, 184, 0.15);
+        color: #17a2b8;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+    .badge-gas {
+        background: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+</style>
+
 {% endblock %}
