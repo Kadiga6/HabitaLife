@@ -35,49 +35,69 @@ class AuthController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
-        ValidatorInterface $validator,
         UtilisateurRepository $utilisateurRepository
     ): Response
     {
+        // 1️⃣ INITIALISER TOUTES LES CLÉS AVEC NULL (IMPORTANT !)
+        // Cette structure est TOUJOURS présente, peu importe GET ou POST
+        $errors = [
+            'email' => null,
+            'prenom' => null,
+            'nom' => null,
+            'motDePasse' => null,
+            'confirmPassword' => null,
+        ];
+
+        // Variables du formulaire
+        $email = '';
+        $prenom = '';
+        $nom = '';
+
+        // 2️⃣ TRAITEMENT POST
         if ($request->isMethod('POST')) {
-            $errors = [];
-            $email = $request->request->get('email');
-            $prenom = $request->request->get('prenom');
-            $nom = $request->request->get('nom');
-            $motDePasse = $request->request->get('motDePasse');
-            $confirmPassword = $request->request->get('confirmPassword');
+            // Récupérer les données du formulaire
+            $email = $request->request->get('email', '');
+            $prenom = $request->request->get('prenom', '');
+            $nom = $request->request->get('nom', '');
+            $motDePasse = $request->request->get('motDePasse', '');
+            $confirmPassword = $request->request->get('confirmPassword', '');
 
-            // Initialiser le tableau d'erreurs
-            $errors = [];
-
-            // Validation basique
-            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // 3️⃣ VALIDATION - ajouter les erreurs uniquement si nécessaire
+            // Email
+            if (empty($email)) {
+                $errors['email'] = 'L\'email est requis.';
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'Veuillez entrer une adresse email valide.';
+            } elseif ($utilisateurRepository->findOneBy(['email' => $email])) {
+                $errors['email'] = 'Cet email est déjà utilisé.';
             }
 
+            // Prénom
             if (empty($prenom)) {
                 $errors['prenom'] = 'Le prénom est requis.';
             }
 
+            // Nom
             if (empty($nom)) {
                 $errors['nom'] = 'Le nom est requis.';
             }
 
-            if (empty($motDePasse) || strlen($motDePasse) < 6) {
+            // Mot de passe
+            if (empty($motDePasse)) {
+                $errors['motDePasse'] = 'Le mot de passe est requis.';
+            } elseif (strlen($motDePasse) < 6) {
                 $errors['motDePasse'] = 'Le mot de passe doit contenir au moins 6 caractères.';
             }
 
-            if ($motDePasse !== $confirmPassword) {
+            // Confirmation mot de passe
+            if (empty($confirmPassword)) {
+                $errors['confirmPassword'] = 'Veuillez confirmer votre mot de passe.';
+            } elseif ($motDePasse !== $confirmPassword) {
                 $errors['confirmPassword'] = 'Les mots de passe ne correspondent pas.';
             }
 
-            // Vérifier si l'email existe déjà
-            if ($utilisateurRepository->findOneBy(['email' => $email])) {
-                $errors['email'] = 'Cet email est déjà utilisé.';
-            }
-
-            // Si pas d'erreurs, créer l'utilisateur
-            if (empty($errors)) {
+            // 4️⃣ SI PAS D'ERREURS, CRÉER L'UTILISATEUR
+            if (!array_filter($errors)) { // Vérifier que TOUTES les erreurs sont null
                 $utilisateur = new Utilisateur();
                 $utilisateur->setEmail($email);
                 $utilisateur->setPrenom($prenom);
@@ -86,42 +106,28 @@ class AuthController extends AbstractController
                 $utilisateur->setDateCreation(new \DateTime());
 
                 // Hasher le mot de passe
-                $hashedPassword = $passwordHasher->hashPassword(
-                    $utilisateur,
-                    $motDePasse
-                );
+                $hashedPassword = $passwordHasher->hashPassword($utilisateur, $motDePasse);
                 $utilisateur->setMotDePasse($hashedPassword);
 
                 // Persister et flush
                 $entityManager->persist($utilisateur);
                 $entityManager->flush();
 
-                // Rediriger vers la page de connexion
+                // Succès - rediriger
                 $this->addFlash('success', 'Inscription réussie ! Vous pouvez maintenant vous connecter.');
                 return $this->redirectToRoute('app_login');
             }
 
-            return $this->render('inscription/index.html.twig', [
-                'errors' => $errors,
-                'email' => $email,
-                'prenom' => $prenom,
-                'nom' => $nom,
-            ]);
+            // POST avec erreurs : afficher le formulaire avec les erreurs
         }
 
-return $this->render('inscription/index.html.twig', [
-    'errors' => [
-        'email' => null,
-        'prenom' => null,
-        'nom' => null,
-        'motDePasse' => null,
-        'confirmPassword' => null,
-    ],
-    'email' => '',
-    'prenom' => '',
-    'nom' => '',
-]);
-
+        // 5️⃣ RENDU - Toujours avec la structure complète des erreurs
+        return $this->render('inscription/index.html.twig', [
+            'errors' => $errors,
+            'email' => $email,
+            'prenom' => $prenom,
+            'nom' => $nom,
+        ]);
     }
 
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]

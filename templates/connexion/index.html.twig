@@ -3,109 +3,492 @@
 {% block title %}Connexion - HabitaGo{% endblock %}
 
 {% block body %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="row w-100" style="max-width: 400px;">
-        <div class="col-12">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    <h1 class="text-center mb-4">Connexion</h1>
+<div class="login-container">
+    <!-- Colonne gauche : Image + Overlay -->
+    <div class="login-left">
+        <div class="login-left-bg">
+            <!-- Logo HabitaGo -->
+            <div class="login-logo">
+                <h2 class="fw-bold">🏠 HabitaGo</h2>
+            </div>
 
-                    {% if error %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-circle-fill me-2"></i>
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endif %}
+            <!-- Texte d'accroche -->
+            <div class="login-tagline">
+                <h3 class="text-white fw-bold">Gérez votre logement</h3>
+                <p class="text-white-50">Simplement et efficacement</p>
+            </div>
+        </div>
+    </div>
 
-                    <form method="post" action="{{ path('app_login') }}" class="needs-validation" novalidate>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-control" 
-                                value="{{ last_email }}"
-                                required
-                                placeholder="votre@email.com"
-                            />
-                        </div>
+    <!-- Colonne droite : Formulaire -->
+    <div class="login-right">
+        <div class="login-form-wrapper">
+            <!-- En-tête du formulaire -->
+            <div class="login-header mb-5">
+                <h1 class="login-title">Bienvenue sur HabitaGo</h1>
+                <p class="login-subtitle">Connectez-vous pour accéder à votre espace</p>
+            </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Mot de passe</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="motDePasse" 
-                                class="form-control" 
-                                required
-                                placeholder="Entrez votre mot de passe"
-                            />
-                        </div>
-
-                        <div class="mb-3 form-check">
-                            <input 
-                                type="checkbox" 
-                                id="remember" 
-                                name="_remember_me" 
-                                class="form-check-input"
-                            />
-                            <label class="form-check-label" for="remember">
-                                Se souvenir de moi
-                            </label>
-                        </div>
-{% if error %}
-    <pre>{{ dump(error) }}</pre>
+            <!-- Message d'erreur -->
+        {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
+        Email ou mot de passe incorrect
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 {% endif %}
 
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>
-                            Se connecter
-                        </button>
-                    </form>
-
-                    <hr class="my-4"/>
-
-                    <p class="text-center text-muted">
-                        Pas encore de compte?
-                        <a href="{{ path('app_register') }}" class="text-decoration-none fw-bold">
-                            S'inscrire
-                        </a>
-                    </p>
+            <!-- Formulaire de connexion -->
+            <form method="post" action="{{ path('app_login') }}" class="login-form">
+                <!-- Champ Email -->
+                <div class="form-group mb-4">
+                    <label for="email" class="form-label">Adresse email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control form-control-lg" 
+                        value="{{ last_email }}"
+                        required
+                        placeholder="votre@email.com"
+                    />
                 </div>
-            </div>
+
+                <!-- Champ Mot de passe -->
+                <div class="form-group mb-4">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="motDePasse" 
+                            class="form-control form-control-lg" 
+                            required
+                            placeholder="Entrez votre mot de passe"
+                        />
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            data-toggle-password="password"
+                            title="Afficher/Masquer le mot de passe"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Checkbox et lien Mot de passe oublié -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        
+                       
+                    </div>
+                    <a href="#" class="forgot-password-link">Mot de passe oublié?</a>
+                </div>
+
+                <!-- Bouton de connexion -->
+                <button type="submit" class="btn btn-login w-100 mb-4">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Se connecter
+                </button>
+
+                <!-- Divider -->
+                <div class="divider mb-4">
+                    <span class="divider-text">Nouveau sur HabitaGo?</span>
+                </div>
+
+                <!-- Bouton Créer un compte -->
+                <a href="{{ path('app_register') }}" class="btn btn-register w-100">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Créer un compte
+                </a>
+            </form>
         </div>
     </div>
 </div>
 
 <style>
-    .card {
-        border-radius: 15px;
+    /* ===== Layout Principal ===== */
+    .login-container {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
     }
 
-    .form-control {
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        padding: 0.75rem 1rem;
+    /* ===== Colonne Gauche ===== */
+    .login-left {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .login-left-bg {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%),
+            url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaGF0LWltYWdlfHx8ZW58MHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3rem;
+    }
+
+    /* Logo */
+    .login-logo {
+        z-index: 10;
+    }
+
+    .login-logo h2 {
+        color: white;
+        font-size: 1.75rem;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Texte d'accroche */
+    .login-tagline {
+        z-index: 10;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .login-tagline h3 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-tagline p {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    /* ===== Colonne Droite ===== */
+    .login-right {
+        flex: 1;
+        background: #f8f9fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+    }
+
+    .login-form-wrapper {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    /* En-tête du formulaire */
+    .login-header {
+        text-align: center;
+    }
+
+    .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-subtitle {
         font-size: 0.95rem;
+        color: #718096;
+        margin: 0;
     }
 
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    /* Formulaire */
+    .login-form {
+        animation: fadeInUp 0.8s ease-out 0.2s both;
     }
 
-    .btn-primary {
-        border-radius: 8px;
-        padding: 0.75rem;
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
         font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .form-control-lg {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 0.85rem 1.2rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-lg:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    /* Password Input Wrapper */
+    .password-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-input-wrapper .form-control-lg {
+        padding-right: 2.5rem;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1.2rem;
+        background: none;
+        border: none;
+        color: #718096;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: #667eea;
+    }
+
+    /* Checkbox et liens */
+    .form-check-input {
+        border-radius: 4px;
+        border: 1px solid #cbd5e0;
+        width: 1.1em;
+        height: 1.1em;
+        margin-top: 0.25em;
+        cursor: pointer;
         transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    .form-check-label {
+        color: #4a5568;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+
+    .forgot-password-link {
+        color: #667eea;
+        font-size: 0.9rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .forgot-password-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    /* Boutons */
+    .btn-login,
+    .btn-register {
+        border-radius: 10px;
+        padding: 0.85rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-login:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .btn-register {
+        background: white;
+        color: #667eea;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-register:hover {
+        background: #f7fafc;
+        border-color: #667eea;
+        color: #764ba2;
+    }
+
+    /* Divider */
+    .divider {
+        display: flex;
+        align-items: center;
+        color: #cbd5e0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    .divider-text {
+        padding: 0 1rem;
+        color: #a0aec0;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Alertes */
+    .alert {
+        border-radius: 10px;
+        border: none;
+        background-color: #fed7d7;
+        color: #c53030;
+    }
+
+    .alert-danger {
+        background-color: #fed7d7;
+        color: #c53030;
+    }
+
+    .alert-success {
+        background-color: #c6f6d5;
+        color: #22543d;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 992px) {
+        .login-container {
+            flex-direction: column;
+        }
+
+        .login-left {
+            min-height: 250px;
+        }
+
+        .login-left-bg {
+            padding: 2rem;
+        }
+
+        .login-tagline h3 {
+            font-size: 1.5rem;
+        }
+
+        .login-right {
+            padding: 2rem;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .login-left {
+            min-height: 150px;
+        }
+
+        .login-left-bg {
+            padding: 1.5rem;
+        }
+
+        .login-logo h2 {
+            font-size: 1.5rem;
+        }
+
+        .login-tagline h3 {
+            font-size: 1.2rem;
+        }
+
+        .login-tagline p {
+            font-size: 0.9rem;
+        }
+
+        .login-right {
+            padding: 1.5rem;
+        }
+
+        .login-form-wrapper {
+            max-width: 100%;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.85rem;
+        }
+
+        .form-control-lg {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-login,
+        .btn-register {
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+        }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        const passwordToggleButtons = document.querySelectorAll('[data-toggle-password]');
+        
+        passwordToggleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-toggle-password');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

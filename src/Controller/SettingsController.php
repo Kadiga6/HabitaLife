@@ -72,10 +72,10 @@ class SettingsController extends AbstractController
         $user = $this->getUser();
 
         // Vérifier le token CSRF pour la sécurité
-        if (!$this->isCsrfTokenValid('delete_account', $request->request->get('_token'))) {
-            $this->addFlash('error', 'Token de sécurité invalide.');
-            return $this->redirectToRoute('settings');
-        }
+      if (!$this->isCsrfTokenValid('delete_account', $request->request->get('_token'))) {
+    $this->addFlash('danger', 'Token de sécurité invalide.');
+    return $this->redirectToRoute('settings');
+}
 
         // Supprimer l'utilisateur
         $entityManager->remove($user);

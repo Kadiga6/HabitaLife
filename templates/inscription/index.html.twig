@@ -3,134 +3,194 @@
 {% block title %}Inscription - HabitaGo{% endblock %}
 
 {% block body %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    <div class="row w-100" style="max-width: 500px;">
-        <div class="col-12">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-5">
-                    <h1 class="text-center mb-1">Créer un compte</h1>
-                    <p class="text-center text-muted mb-4">Rejoignez-nous et gérez vos logements</p>
-
-                  {% for message in app.flashes('success') %}
-                   <div class="alert alert-success alert-dismissible fade show" role="alert">
-                     <i class="bi bi-check-circle-fill me-2"></i>
-                             {{ message }}
-                       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                   </div>
-                   {% endfor %}
-
-
-                    <form method="post" action="{{ path('app_register') }}" class="needs-validation" novalidate>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="prenom" class="form-label">Prénom</label>
-                                <input 
-                                    type="text" 
-                                    id="prenom" 
-                                    name="prenom" 
-                                    class="form-control {% if errors.prenom %}is-invalid{% endif %}" 
-                                    value="{{ prenom|default('') }}"
-                                    required
-                                    placeholder="Jean"
-                                />
-                                {% if errors.prenom %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ errors.prenom }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="nom" class="form-label">Nom</label>
-                                <input 
-                                    type="text" 
-                                    id="nom" 
-                                    name="nom" 
-                                    class="form-control {% if errors.nom %}is-invalid{% endif %}" 
-                                    value="{{ nom|default('') }}"
-                                    required
-                                    placeholder="Dupont"
-                                />
-                                {% if errors.nom %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ errors.nom }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Adresse email</label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-control {% if errors.email %}is-invalid{% endif %}" 
-                                value="{{ email|default('') }}"
-                                required
-                                placeholder="vous@email.com"
-                            />
-                            {% if errors.email %}
-                                <div class="invalid-feedback d-block">
-                                    {{ errors.email }}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="motDePasse" class="form-label">Mot de passe</label>
-                            <input 
-                                type="password" 
-                                id="motDePasse" 
-                                name="motDePasse" 
-                                class="form-control {% if errors.motDePasse %}is-invalid{% endif %}" 
-                                required
-                                placeholder="Au moins 6 caractères"
-                            />
-                            {% if errors.motDePasse %}
-                                <div class="invalid-feedback d-block">
-                                    {{ errors.motDePasse }}
-                                </div>
-                            {% endif %}
-                            <small class="text-muted d-block mt-1">
-                                <i class="bi bi-info-circle"></i>
-                                Minimum 6 caractères
-                            </small>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-                            <input 
-                                type="password" 
-                                id="confirmPassword" 
-                                name="confirmPassword" 
-                                class="form-control {% if errors.confirmPassword %}is-invalid{% endif %}" 
-                                required
-                                placeholder="Confirmez votre mot de passe"
-                            />
-                            {% if errors.confirmPassword %}
-                                <div class="invalid-feedback d-block">
-                                    {{ errors.confirmPassword }}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            <i class="bi bi-person-plus-fill me-2"></i>
-                            S'inscrire
-                        </button>
-                    </form>
-
-                    <hr class="my-4"/>
-
-                    <p class="text-center text-muted">
-                        Vous avez déjà un compte?
-                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold">
-                            Se connecter
-                        </a>
-                    </p>
-                </div>
+<div class="register-container">
+    <!-- Colonne gauche : Image + Overlay -->
+    <div class="register-left">
+        <div class="register-left-bg">
+            <!-- Logo HabitaGo -->
+            <div class="register-logo">
+                <h2 class="fw-bold">🏠 HabitaGo</h2>
             </div>
 
+            <!-- Texte d'accroche -->
+            <div class="register-tagline">
+                <h3 class="text-white fw-bold">Rejoignez-nous</h3>
+                <p class="text-white-50">Gérez vos logements simplement</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Colonne droite : Formulaire -->
+    <div class="register-right">
+        <div class="register-form-wrapper">
+            <!-- En-tête du formulaire -->
+            <div class="register-header mb-4">
+                <h1 class="register-title">Créer un compte</h1>
+                <p class="register-subtitle">Rejoignez-nous et gérez vos logements</p>
+            </div>
+
+            {% set classes = {
+    success: 'success',
+    error: 'danger',
+    warning: 'warning',
+    info: 'info'
+} %}
+
+
+            <!-- Messages de succès -->
+         {% for type, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ classes[type]|default('secondary') }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+            <!-- Formulaire d'inscription -->
+            <form method="post" action="{{ path('app_register') }}" class="register-form">
+                <!-- Prénom et Nom -->
+                <div class="row">
+                 <div class="col-md-6">
+    <div class="form-group mb-3">
+        <label for="prenom" class="form-label">Prénom</label>
+        <input
+            type="text"
+            id="prenom"
+            name="prenom"
+            class="form-control form-control-lg {% if errors.prenom is not null %}is-invalid{% endif %}"
+            value="{{ prenom|default('') }}"
+            placeholder="Jean"
+        />
+        {% if errors.prenom is not null %}
+            <div class="invalid-feedback d-block">
+                {{ errors.prenom }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+                   <div class="col-md-6">
+    <div class="form-group mb-3">
+        <label for="nom" class="form-label">Nom</label>
+        <input
+            type="text"
+            id="nom"
+            name="nom"
+            class="form-control form-control-lg {% if errors.nom is not null %}is-invalid{% endif %}"
+            value="{{ nom|default('') }}"
+            placeholder="Dupont"
+        />
+        {% if errors.nom is not null %}
+            <div class="invalid-feedback d-block">
+                {{ errors.nom }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+                </div>
+
+                <!-- Email -->
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">Adresse email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control form-control-lg {% if errors is defined and errors.email %}is-invalid{% endif %}" 
+                        value="{{ email|default('') }}"
+                        required
+                        placeholder="vous@email.com"
+                    />
+                    {% if errors is defined and errors.email %}
+                        <div class="invalid-feedback d-block">
+                            {{ errors.email }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Mot de passe -->
+                <div class="form-group mb-3">
+                    <label for="motDePasse" class="form-label">Mot de passe</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="motDePasse" 
+                            name="motDePasse" 
+                            class="form-control form-control-lg {% if errors is defined and errors.motDePasse %}is-invalid{% endif %}" 
+                            required
+                            placeholder="Au moins 6 caractères"
+                        />
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            data-toggle-password="motDePasse"
+                            title="Afficher/Masquer le mot de passe"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    {% if errors is defined and errors.motDePasse %}
+                        <div class="invalid-feedback d-block">
+                            {{ errors.motDePasse }}
+                        </div>
+                    {% endif %}
+                    <small class="text-muted d-block mt-1">
+                        <i class="bi bi-info-circle"></i>
+                        Minimum 6 caractères
+                    </small>
+                </div>
+
+                <!-- Confirmer le mot de passe -->
+                <div class="form-group mb-4">
+                    <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
+                            class="form-control form-control-lg {% if errors is defined and errors.confirmPassword %}is-invalid{% endif %}" 
+                            required
+                            placeholder="Confirmez votre mot de passe"
+                        />
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            data-toggle-password="confirmPassword"
+                            title="Afficher/Masquer le mot de passe"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    {% if errors is defined and errors.confirmPassword %}
+                        <div class="invalid-feedback d-block">
+                            {{ errors.confirmPassword }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Bouton d'inscription -->
+                <button type="submit" class="btn btn-register-submit w-100 mb-4">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    S'inscrire
+                </button>
+
+                <!-- Divider -->
+                <div class="divider mb-4">
+                    <span class="divider-text">Vous avez déjà un compte?</span>
+                </div>
+
+                <!-- Lien Connexion -->
+                <a href="{{ path('app_login') }}" class="btn btn-register-login w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Se connecter
+                </a>
+            </form>
+
+            <!-- Texte sécurité -->
             <p class="text-center text-muted small mt-4">
                 <i class="bi bi-shield-lock"></i>
                 Vos données sont sécurisées et chiffrées
@@ -140,52 +200,371 @@
 </div>
 
 <style>
-    .card {
-        border-radius: 15px;
+    /* ===== Layout Principal ===== */
+    .register-container {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
     }
 
-    .form-control {
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-        padding: 0.75rem 1rem;
+    /* ===== Colonne Gauche ===== */
+    .register-left {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .register-left-bg {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%),
+            url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaGF0LWltYWdlfHx8ZW58MHx8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3rem;
+    }
+
+    /* Logo */
+    .register-logo {
+        z-index: 10;
+    }
+
+    .register-logo h2 {
+        color: white;
+        font-size: 1.75rem;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Texte d'accroche */
+    .register-tagline {
+        z-index: 10;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .register-tagline h3 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-tagline p {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    /* ===== Colonne Droite ===== */
+    .register-right {
+        flex: 1;
+        background: #f8f9fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 2rem;
+        overflow-y: auto;
+    }
+
+    .register-form-wrapper {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    /* En-tête du formulaire */
+    .register-header {
+        text-align: center;
+    }
+
+    .register-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+    }
+
+    .register-subtitle {
         font-size: 0.95rem;
+        color: #718096;
+        margin: 0;
     }
 
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    /* Formulaire */
+    .register-form {
+        animation: fadeInUp 0.8s ease-out 0.2s both;
     }
 
-    .form-control.is-invalid {
-        border-color: #dc3545;
-    }
-
-    .form-control.is-invalid:focus {
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
-    }
-
-    .invalid-feedback {
-        color: #dc3545;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
-
-    .btn-primary {
-        border-radius: 8px;
-        padding: 0.75rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    .form-group {
+        position: relative;
     }
 
     .form-label {
         font-weight: 600;
-        color: #212529;
-        margin-bottom: 0.5rem;
+        color: #2d3748;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .form-control-lg {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 0.85rem 1.2rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-lg:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .form-control-lg.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-control-lg.is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Password Input Wrapper */
+    .password-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-input-wrapper .form-control-lg {
+        padding-right: 2.5rem;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1.2rem;
+        background: none;
+        border: none;
+        color: #718096;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 0.5rem;
+        transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+        color: #667eea;
+    }
+
+    /* Boutons */
+    .btn-register-submit,
+    .btn-register-login {
+        border-radius: 10px;
+        padding: 0.85rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-register-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-register-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .btn-register-submit:active {
+        transform: translateY(0);
+    }
+
+    .btn-register-login {
+        background: white;
+        color: #667eea;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-register-login:hover {
+        background: #f7fafc;
+        border-color: #667eea;
+        color: #764ba2;
+    }
+
+    /* Divider */
+    .divider {
+        display: flex;
+        align-items: center;
+        color: #cbd5e0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    .divider-text {
+        padding: 0 1rem;
+        color: #a0aec0;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* Alertes */
+    .alert {
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background-color: #c6f6d5;
+        color: #22543d;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 992px) {
+        .register-container {
+            flex-direction: column;
+        }
+
+        .register-left {
+            min-height: 250px;
+        }
+
+        .register-left-bg {
+            padding: 2rem;
+        }
+
+        .register-tagline h3 {
+            font-size: 1.5rem;
+        }
+
+        .register-right {
+            padding: 2rem;
+        }
+
+        .register-title {
+            font-size: 1.75rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .register-left {
+            min-height: 150px;
+        }
+
+        .register-left-bg {
+            padding: 1.5rem;
+        }
+
+        .register-logo h2 {
+            font-size: 1.5rem;
+        }
+
+        .register-tagline h3 {
+            font-size: 1.2rem;
+        }
+
+        .register-tagline p {
+            font-size: 0.9rem;
+        }
+
+        .register-right {
+            padding: 1.5rem;
+        }
+
+        .register-form-wrapper {
+            max-width: 100%;
+        }
+
+        .register-title {
+            font-size: 1.5rem;
+        }
+
+        .register-subtitle {
+            font-size: 0.85rem;
+        }
+
+        .form-control-lg {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-register-submit,
+        .btn-register-login {
+            padding: 0.75rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .row {
+            margin-left: -0.5rem;
+            margin-right: -0.5rem;
+        }
+
+        .col-md-6 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        const passwordToggleButtons = document.querySelectorAll('[data-toggle-password]');
+        
+        passwordToggleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-toggle-password');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

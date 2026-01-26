@@ -1,0 +1,242 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déclarer un incident - HabitaGo{% endblock %}
+
+{% block body %}
+<style>
+    .dashboard-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%);
+        min-height: 100vh;
+        padding: 3rem 0;
+    }
+
+    .card-modern {
+        border: none;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .card-modern:hover {
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+    }
+
+    .card-header-modern {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .card-header-modern h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    .card-header-modern i {
+        font-size: 1.8rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.75rem;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        border-color: #6c757d;
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                {# Bouton retour #}
+                <a href="{{ path('issues') }}" class="btn btn-outline-secondary mb-3">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+
+                <div class="card-modern">
+                    <div class="card-header-modern">
+                        <h3>
+                            <i class="bi bi-exclamation-circle"></i> Déclarer un nouvel incident
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        {# Informations du logement #}
+                        {% if contrat %}
+                        <div class="alert alert-light border mb-4" style="border-radius: 8px;">
+                            <p class="mb-0">
+                                <strong>📍 Logement :</strong><br>
+                                {{ contrat.logement.adresse }}<br>
+                                {{ contrat.logement.codePostal }} {{ contrat.logement.ville }}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                    {# Formulaire #}
+                    {{ form_start(form, {
+                        attr: {
+                            class: 'needs-validation',
+                            novalidate: true
+                        }
+                    }) }}
+
+                    {# Titre #}
+                    <div class="mb-3">
+                        {{ form_label(form.titre, 'Titre de l\'incident') }}
+                        {{ form_widget(form.titre) }}
+                        {% if form.titre.vars.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.titre.vars.errors %}
+                                    {{ error.message }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Catégorie et Priorité sur 2 colonnes #}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.categorie) }}
+                                {{ form_widget(form.categorie) }}
+                                {% if form.categorie.vars.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.categorie.vars.errors %}
+                                            {{ error.message }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form_label(form.priorite) }}
+                                {{ form_widget(form.priorite) }}
+                                {% if form.priorite.vars.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.priorite.vars.errors %}
+                                            {{ error.message }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Description #}
+                    <div class="mb-3">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description) }}
+                        {% if form.description.vars.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.description.vars.errors %}
+                                    {{ error.message }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                        {# Boutons #}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Déclarer l'incident
+                            </button>
+                            <a href="{{ path('issues') }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </a>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                {# Conseils pratiques #}
+                <div class="card-modern mt-4" style="background: linear-gradient(135deg, rgba(23, 162, 184, 0.05), rgba(13, 202, 240, 0.05));">
+                    <div class="card-header-modern" style="background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%);">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Conseils pour une déclaration efficace</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <ul class="mb-0">
+                            <li>Soyez <strong>spécifique</strong> : décrivez exactement où et comment le problème se manifeste</li>
+                            <li>Incluez les <strong>détails importants</strong> : depuis quand, impact sur votre confort, etc.</li>
+                            <li>Choisissez la <strong>priorité appropriée</strong> : urgente pour les problèmes de sécurité ou de confort immédiat</li>
+                            <li>Une <strong>bonne description</strong> accélère le traitement de votre demande</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -156,7 +156,11 @@
 </head>
 
 <body>
-    {# Navbar #} {% include 'partials/navbar.html.twig' %} {# Messages flash #}
+{# Navbar #}
+{% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
+    {% include 'partials/navbar.html.twig' %}
+{% endif %}
+    {# Messages flash #}
     <div class="container-lg mt-3">
         {% for type, messages in app.flashes %}
             {% if type == 'success' %}

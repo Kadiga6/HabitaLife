@@ -307,12 +307,18 @@
                         En supprimant votre compte, vous perdrez l'accès à tous vos services et données.
                     </p>
 
-                    <form method="POST" action="{{ path('settings_delete_account') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
-                        {{ csrf_token('delete_account') }}
-                        <button type="submit" class="btn btn-danger-modern">
-                            <i class="bi bi-trash me-2"></i>Supprimer définitivement mon compte
-                        </button>
-                    </form>
+                 <form method="POST"
+      action="{{ path('settings_delete_account') }}"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+
+    <button type="submit" class="btn btn-danger-modern">
+        <i class="bi bi-trash me-2"></i>
+        Supprimer définitivement mon compte
+    </button>
+</form>
+
                 </div>
             </div>
         </div>

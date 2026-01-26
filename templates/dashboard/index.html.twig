@@ -416,22 +416,27 @@
                         <h5>Paiements</h5>
                     </div>
                     <div class="stat-summary">
-                        <p class="stat-title">Loyer mensuel</p>
-                        <div class="stat-value">850.00 €</div>
-                        <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <span class="badge-modern badge-en-attente">1 en attente</span>
-                        </div>
+                        <p class="stat-title">Montant du loyer</p>
+                        {% if contrat %}
+                            <div class="stat-value">{{ contrat.montantLoyer|number_format(2, ',', ' ') }} €</div>
+                        {% else %}
+                            <div class="stat-value text-muted">—</div>
+                        {% endif %}
+                  
                         <div class="stat-item">
                             <span class="text-success">Payés :</span>
-                            <strong>5</strong>
+                           <strong>{{ paiementsPayes|default([])|length }}</strong>
                         </div>
                         <div class="stat-item">
                             <span class="text-danger">En retard :</span>
-                            <strong>0</strong>
+                            <strong>{{ paiementsPayes|default([])|length }}</strong>
                         </div>
-                        <a href="/payments" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
-                            <i class="bi bi-arrow-right-circle me-2"></i> Voir l'historique
-                        </a>
+                        <a href="{{ path('payments_index') }}"
+   class="btn btn-sm w-100"
+   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <i class="bi bi-arrow-right-circle me-2"></i>
+    Voir l’historique
+</a>
                     </div>
                 </div>
             </div>
@@ -443,21 +448,27 @@
                         <h5>Consommations</h5>
                     </div>
                     <div class="stat-summary">
-                        <p class="stat-title">Totaux</p>
+                        <p class="stat-title">Mois actuel</p>
                         <div class="stat-value">Détails →</div>
-                        <div class="stat-item">
-                            <span>Électricité :</span>
-                            <strong>{{ totauxConsommation.electricite|number_format(2, ',', ' ') }} kWh</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>Eau :</span>
-                            <strong>{{ totauxConsommation.eau|number_format(2, ',', ' ') }} m³</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>Gaz :</span>
-                            <strong>{{ totauxConsommation.gaz|number_format(2, ',', ' ') }} kWh</strong>
-                        </div>
-                        <a href="/consumption" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
+                        {% if totauxConsommation %}
+                            <div class="stat-item">
+                                <span><i class="bi bi-lightning text-warning"></i> Électricité :</span>
+                                <strong>{{ totauxConsommation.electricite|number_format(2, ',', ' ') }} kWh</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span><i class="bi bi-droplet text-primary"></i> Eau :</span>
+                                <strong>{{ totauxConsommation.eau|number_format(2, ',', ' ') }} m³</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span><i class="bi bi-fire text-danger"></i> Gaz :</span>
+                                <strong>{{ totauxConsommation.gaz|number_format(2, ',', ' ') }} kWh</strong>
+                            </div>
+                        {% else %}
+                            <div class="stat-item">
+                                <span class="text-muted">Aucune donnée disponible</span>
+                            </div>
+                        {% endif %}
+                        <a href="{{ path('consumption') }}" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #17a2b8 0%, #0dcaf0 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
                             <i class="bi bi-arrow-right-circle me-2"></i> Voir les détails
                         </a>
                     </div>
@@ -472,20 +483,31 @@
                     </div>
                     <div class="stat-summary">
                         <p class="stat-title">État actuel</p>
-                        <div class="stat-value">3 actifs</div>
-                        <div class="stat-item">
-                            <span class="text-warning">En attente :</span>
-                            <strong>2</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span class="text-info">En cours :</span>
-                            <strong>1</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span class="text-success">Résolus :</span>
-                            <strong>8</strong>
-                        </div>
-                        <a href="/issues" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
+                        {% if incidents is defined and incidents|length > 0 %}
+
+                            {% set incidentsNonResolus = incidents|default([])|filter(i => i.dateResolution is null) %}
+{% set incidentsResolus = incidents|default([])|filter(i => i.dateResolution is not null) %}
+
+                            <div class="stat-value">{{ incidentsNonResolus|length }} actifs</div>
+                            <div class="stat-item">
+                                <span class="text-warning">Non résolus :</span>
+                                <strong>{{ incidentsNonResolus|length }}</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span class="text-success">Résolus :</span>
+                                <strong>{{ incidentsResolus|length }}</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span class="text-muted">Total :</span>
+                                <strong>{{ incidents|length }}</strong>
+                            </div>
+                        {% else %}
+                            <div class="stat-value">0 actifs</div>
+                            <div class="stat-item">
+                                <span class="text-success"><i class="bi bi-check-circle"></i> Aucun incident</span>
+                            </div>
+                        {% endif %}
+                        <a href="{{ path('issues') }}" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1rem; font-weight: 600;">
                             <i class="bi bi-arrow-right-circle me-2"></i> Gérer les incidents
                         </a>
                     </div>
@@ -494,44 +516,63 @@
         </div>
 
         {# Quick actions #}
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="quick-actions-card">
-                    <div style="margin-bottom: 1.5rem;">
-                        <h5 style="color: #333; font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin: 0;">
-                            <i class="bi bi-lightning-fill"></i>
-                            Actions rapides
-                        </h5>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <button class="action-btn success w-100">
-                                <i class="bi bi-credit-card"></i>
-                                <span>Payer mon loyer</span>
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="action-btn danger w-100">
-                                <i class="bi bi-plus-circle"></i>
-                                <span>Déclarer un incident</span>
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="action-btn info w-100">
-                                <i class="bi bi-file-earmark-text"></i>
-                                <span>Mes documents</span>
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="action-btn warning w-100">
-                                <i class="bi bi-envelope"></i>
-                                <span>Contacter le bailleur</span>
-                            </button>
-                        </div>
-                    </div>
+      <div class="row mb-5">
+    <div class="col-12">
+        <div class="quick-actions-card">
+            <div style="margin-bottom: 1.5rem;">
+                <h5 style="color: #333; font-weight: 700; display: flex; align-items: center; gap: 0.8rem; margin: 0;">
+                    <i class="bi bi-lightning-fill"></i>
+                    Actions rapides
+                </h5>
+            </div>
+
+            <div class="row g-3">
+
+                <!-- Payer mon loyer -->
+                <div class="col-md-3">
+                    <a href="{{ path('payments_index') }}"
+                       class="action-btn success w-100"
+                       style="text-decoration: none; cursor: pointer;">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Payer mon loyer</span>
+                    </a>
                 </div>
+
+                <!-- Déclarer un incident -->
+                <div class="col-md-3">
+                    <a href="{{ path('issues_new') }}"
+                       class="action-btn danger w-100"
+                       style="text-decoration: none; cursor: pointer;">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Déclarer un incident</span>
+                    </a>
+                </div>
+
+                <!-- Mes consommations -->
+                <div class="col-md-3">
+                    <a href="{{ path('consumption') }}"
+                       class="action-btn info w-100"
+                       style="text-decoration: none; cursor: pointer;">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Mes consommations</span>
+                    </a>
+                </div>
+
+                <!-- Historique des incidents -->
+                <div class="col-md-3">
+                    <a href="{{ path('issues') }}"
+                       class="action-btn warning w-100"
+                       style="text-decoration: none; cursor: pointer;">
+                        <i class="bi bi-tools"></i>
+                        <span>Historique des incidents</span>
+                    </a>
+                </div>
+
             </div>
         </div>
+    </div>
+</div>
+
 
         {# Incidents and Statistics #}
         <div class="row g-4 mb-5">
@@ -542,28 +583,84 @@
                         <h5>Incidents en cours</h5>
                     </div>
                     <div style="padding: 2rem;">
-                        <div class="incident-item">
-                            <div>
-                                <div class="incident-title">#011 - Fuite d'eau sous l'évier</div>
-                                <div class="incident-date">Déclaré le 10/01/2026</div>
+                        {% if incidents is defined and incidents|length > 0 %}
+                           {% set incidentsActifs = incidents|filter(i => i.statut == 'en_cours') %}
+
+
+                            {% if incidentsActifs|length > 0 %}
+                                {% for incident in incidentsActifs %}
+                                    <div class="incident-item">
+                                        <div>
+                                            <div class="incident-title">#{{ "%03d"|format(incident.id) }} - {{ incident.titre }}</div>
+                                            <div class="incident-date">Déclaré le {{ incident.dateCreation|date('d/m/Y') }}</div>
+                                        </div>
+                                        {% if incident.priorite == 'urgente' %}
+                       <div style="padding: 2rem;">
+    {% if incidents is defined and incidents|length > 0 %}
+        {# DEBUG: Afficher tous les incidents #}
+        {% for incident in incidents %}
+            <div style="background: #f0f0f0; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                <strong>ID:</strong> {{ incident.id }} | 
+                <strong>Statut:</strong> {{ incident.statut }} | 
+                <strong>Titre:</strong> {{ incident.titre }}
+            </div>
+        {% endfor %}
+        
+        {% set incidentsActifs = incidents|filter(i => i.statut == 'en_cours') %}
+        
+        {% if incidentsActifs|length > 0 %}
+            <!-- Affichage normal -->
+            {% for incident in incidentsActifs %}
+                <div class="incident-item">
+                    <div>
+                        <div class="incident-title">#{{ "%03d"|format(incident.id) }} - {{ incident.titre }}</div>
+                        <div class="incident-date">Déclaré le {{ incident.dateCreation|date('d/m/Y') }}</div>
+                    </div>
+                    {% if incident.priorite == 'urgente' %}
+                        <span class="badge-modern badge-urgente">Urgente</span>
+                    {% elseif incident.priorite == 'haute' %}
+                        <span class="badge-modern badge-en-attente">Haute</span>
+                    {% else %}
+                        <span class="badge-modern badge-en-cours">{{ incident.priorite|capitalize }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-4">
+                <i class="bi bi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+                <p class="text-muted mt-2 mb-0">Aucun incident en cours</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-inbox" style="font-size: 2rem; color: #ccc;"></i>
+            <p class="text-muted mt-2 mb-0">Aucun incident</p>
+        </div>
+    {% endif %}
+    <a href="{{ path('issues') }}" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1.5rem; font-weight: 600;">
+        Voir tous les incidents →
+    </a>
+</div>                     <span class="badge-modern badge-urgente">Urgente</span>
+                                        {% elseif incident.priorite == 'haute' %}
+                                            <span class="badge-modern badge-en-attente">Haute</span>
+                                        {% else %}
+                                            <span class="badge-modern badge-en-cours">{{ incident.priorite|capitalize }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+                                    <p class="text-muted mt-2 mb-0">Aucun incident en cours</p>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-inbox" style="font-size: 2rem; color: #ccc;"></i>
+                                <p class="text-muted mt-2 mb-0">Aucun incident</p>
                             </div>
-                            <span class="badge-modern badge-urgente">Urgente</span>
-                        </div>
-                        <div class="incident-item">
-                            <div>
-                                <div class="incident-title">#010 - Radiateur chambre ne chauffe pas</div>
-                                <div class="incident-date">Déclaré le 08/01/2026</div>
-                            </div>
-                            <span class="badge-modern badge-en-cours">En cours</span>
-                        </div>
-                        <div class="incident-item">
-                            <div>
-                                <div class="incident-title">#009 - Prise électrique cuisine HS</div>
-                                <div class="incident-date">Déclaré le 05/01/2026</div>
-                            </div>
-                            <span class="badge-modern badge-en-attente">En attente</span>
-                        </div>
-                        <a href="/issues" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1.5rem; font-weight: 600;">
+                        {% endif %}
+                        <a href="{{ path('issues') }}" class="btn btn-sm w-100" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%); color: white; border: none; border-radius: 8px; margin-top: 1.5rem; font-weight: 600;">
                             Voir tous les incidents →
                         </a>
                     </div>

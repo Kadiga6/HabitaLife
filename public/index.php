@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL & ~E_WARNING);
+
 // public/index.php
 use App\Kernel;
 

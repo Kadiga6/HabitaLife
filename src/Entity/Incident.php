@@ -24,17 +24,18 @@ class Incident
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $statut = null;
+ 
+    #[ORM\Column(length: 50)]
+    private ?string $categorie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $priorite = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $dateCreation = null;
+#[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $dateCreation = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $dateResolution = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $dateResolution = null;
 
     public function getId(): ?int
     {
@@ -77,14 +78,13 @@ class Incident
         return $this;
     }
 
-    public function getStatut(): ?string
+    public function getCategorie(): ?string
     {
-        return $this->statut;
+        return $this->categorie;
     }
-
-    public function setStatut(string $statut): static
+    public function setCategorie(string $categorie): static
     {
-        $this->statut = $statut;
+        $this->categorie = $categorie;
 
         return $this;
     }
@@ -101,12 +101,12 @@ class Incident
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTime
+    public function getDateCreation(): ?\DateTimeInterface
     {
         return $this->dateCreation;
     }
 
-    public function setDateCreation(?\DateTime $dateCreation): static
+    public function setDateCreation(?\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
 
